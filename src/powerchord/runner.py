@@ -74,25 +74,22 @@ class TaskRunner:
             raise PyprojectConfigError(pyproject_file)
         return cls(config.get('tasks', {}), Verbosity(**config.get('verbosity', {})))
 
-    def run_tasks(self) -> None:
-        results = asyncio.run(self.exec_tasks())
-        failed_tasks = [name for name, success in results.items() if not success]
-        if failed_tasks:
-            raise FailedTasksError(failed_tasks)
-
-    async def exec_tasks(self) -> dict[str, bool]:
+    async def run_tasks(self) -> None:
         sys.stdout.write(bright('To do:\n'))
         for name, task in self.tasks.items():
             sys.stdout.write(f'• {name}: {dim(task)}\n')
         sys.stdout.write(bright('\nResults:\n'))
         async with asyncio.TaskGroup() as tg:
             futures = [
-                tg.create_task(self.exec_task(name, task))
+                tg.create_task(self.run_task(name, task))
                 for name, task in self.tasks.items()
             ]
-        return dict(future.result() for future in futures)
+        results = (future.result() for future in futures)
+        failed_tasks = [name for name, success in results if not success]
+        if failed_tasks:
+            raise FailedTasksError(failed_tasks)
 
-    async def exec_task(self, name: str, task: str) -> tuple[str, bool]:
+    async def run_task(self, name: str, task: str) -> tuple[str, bool]:
         proc = await asyncio.create_subprocess_shell(task, stdout=PIPE, stderr=PIPE)
         out, err = await proc.communicate()
         success = proc.returncode == 0
@@ -108,7 +105,7 @@ class TaskRunner:
 
 def run_tasks() -> None:
     try:
-        TaskRunner.with_pyproject_config().run_tasks()
+        asyncio.run(TaskRunner.with_pyproject_config().run_tasks())
     except ConfigError as exc:
         sys.exit(exc.message)
     except BoredomError:
