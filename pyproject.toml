@@ -1,0 +1,132 @@
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "powerchord"
+version = "0.0.1"
+description = "Concurrent CLI task runner"
+authors = ["Huib Piguillet <huib@proton.me>"]
+maintainers = ["Huib Piguillet"]
+license = "MIT"
+readme = "README.md"
+packages = [{ include = "powerchord", from = "src" }]
+include = [{ path = "tests", format = "sdist" }]
+repository = "https://github.com/githuib/powerchord"
+keywords = ["task runner", "cli utility", "concurrent"]
+classifiers = ["Topic :: Utilities"]
+
+[tool.poetry.scripts]
+powerchord = "powerchord.runner:run_tasks"
+
+[tool.poetry.dependencies]
+python = ">=3.11,<4.0"
+
+[tool.poetry.group.qa.dependencies]
+mypy = "*"
+pytest = "*"
+pytest-asyncio = "*"
+ruff = "*"
+
+#[tool.powerchord.verbosity]
+#success = ["info"]
+#fail = ["info", "error"]
+
+[tool.powerchord.tasks]
+linting = "poetry run ruff check ."
+tests = "poetry run pytest"
+type-checking = "poetry run mypy"
+
+[tool.mypy]
+files = ["src", "tests"]
+color_output = true
+implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+
+[tool.pytest.ini_options]
+addopts = "-ra -q --doctest-modules"
+asyncio_mode = "auto"
+
+[tool.ruff]
+indent-width = 4
+line-length = 120
+target-version = "py311"
+
+[tool.ruff.lint]
+# Enable Pyflakes (`F`) and a subset of the pycodestyle (`E`)  codes by default.
+# Unlike Flake8, Ruff doesn't enable pycodestyle warnings (`W`) or
+# McCabe complexity (`C901`) by default.
+select = [
+    "F", # Pyflakes
+    "E", # pycodestyle
+    "E", # pycodestyle
+    "C90", # mccabe
+    "I", # isort
+    "N", # pep8-naming
+#    "D", # pydocstyle
+    "UP", # pyupgrade
+    "YTT", # flake8-2020
+#    "ANN", # flake8-annotations
+    "ASYNC", # flake8-async
+#    "TRIO", # flake8-trio
+    "S", # flake8-bandit
+    "BLE", # flake8-blind-except
+#    "FBT", # flake8-boolean-trap
+    "B", # flake8-bugbear
+    "A", # flake8-builtins
+    "COM", # flake8-commas
+#    "CPY", # flake8-copyright
+    "C4", # flake8-comprehensions
+    "DTZ", # flake8-datetimez
+    "T10", # flake8-debugger
+    "DJ", # flake8-django
+    "EM", # flake8-errmsg
+    "EXE", # flake8-executable
+    "FA", # flake8-future-annotations
+    "ISC", # flake8-implicit-str-concat
+    "ICN", # flake8-import-conventions
+    "G", # flake8-logging-format
+    "INP", # flake8-no-pep420
+    "PIE", # flake8-pie
+    "T20", # flake8-print
+    "PYI", # flake8-pyi
+    "PT", # flake8-pytest-style
+    "Q", # flake8-quotes
+    "RSE", # flake8-raise
+    "RET", # flake8-return
+    "SLF", # flake8-self
+    "SLOT", # flake8-slots
+    "SIM", # flake8-simplify
+    "TID", # flake8-tidy-imports
+    "TCH", # flake8-type-checking
+    "INT", # flake8-gettext
+    "ARG", # flake8-unused-arguments
+    "PTH", # flake8-use-pathlib
+#    "TD", # flake8-todos
+#    "FIX", # flake8-fixme
+#    "ERA", # eradicate
+    "PD", # pandas-vet
+    "PGH", # pygrep-hooks
+    "PL", # Pylint
+    "TRY", # tryceratops
+    "FLY", # flynt
+    "NPY", # NumPy-specific rules
+    "AIR", # Airflow
+    "PERF", # Perflint
+#    "FURB", # refurb
+    "LOG", # flake8-logging
+    "RUF", # Ruff-specific rules
+]
+ignore = [
+    "RUF013", # PEP 484 prohibits implicit `Optional`
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*" = [
+#    "ANN", # flake8-annotations
+    "S", # flake8-bandit
+]
+
+[tool.ruff.lint.flake8-quotes]
+inline-quotes = "single"
