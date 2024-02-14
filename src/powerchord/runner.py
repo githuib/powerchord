@@ -7,7 +7,7 @@ from enum import StrEnum
 from pathlib import Path
 
 from .formatting import bright, dim, status
-from .utils import exec_command, human_readable_duration, timed_awaitable
+from .utils import exec_command, timed_awaitable
 
 
 class BoredomError(Exception):
@@ -40,6 +40,7 @@ class TaskRunner:
             raise BoredomError
         self.tasks = tasks
         self.verbosity = verbosity
+        self.max_name_length = max(len(n) for n in tasks)
 
     @classmethod
     def with_pyproject_config(cls) -> 'TaskRunner':
@@ -54,11 +55,8 @@ class TaskRunner:
         return cls(config.get('tasks', {}), Verbosity(**config.get('verbosity', {})))
 
     async def run_task(self, name: str, task: str) -> tuple[str, bool]:
-        (success, out, err), duration = await timed_awaitable(
-            exec_command(task),
-            formatter=lambda t: dim(f'[{human_readable_duration(t)}]'),
-        )
-        sys.stdout.write(f'{status(success)} {name} {duration}\n')
+        (success, out, err), duration = await timed_awaitable(exec_command(task))
+        sys.stdout.write(f'{status(success)} {name.ljust(self.max_name_length)}  {dim(duration)}\n')
         if self.verbosity.should_output(Output.OUT, success):
             sys.stdout.buffer.write(out)
             sys.stdout.buffer.flush()
@@ -70,7 +68,7 @@ class TaskRunner:
     async def run_tasks(self) -> list[tuple[str, bool]]:
         sys.stdout.write(bright('To do:\n'))
         for name, task in self.tasks.items():
-            sys.stdout.write(f'• {name}: {dim(f"[{task}]")}\n')
+            sys.stdout.write(f'• {name.ljust(self.max_name_length)}  {dim(task)}\n')
         sys.stdout.write(bright('\nResults:\n'))
         futures = [
             asyncio.create_task(self.run_task(name, task))
@@ -91,9 +89,7 @@ def run_tasks() -> None:
     except BoredomError:
         sys.stdout.write('Nothing to do. Getting bored...\n')
     else:
-        failed_tasks = [name for name, success in asyncio.run(
-            task_runner.run_tasks(),
-        ) if not success]
+        failed_tasks = [task for task, ok in asyncio.run(task_runner.run_tasks()) if not ok]
         if failed_tasks:
             sys.stderr.write('\n')
             fail_with(bright('Failed tasks:'), ', '.join(failed_tasks))
