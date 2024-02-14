@@ -1,44 +1,23 @@
 import asyncio
 import sys
 import tomllib
-from abc import ABC, abstractmethod
 from collections.abc import Sequence
+from dataclasses import dataclass
 from enum import StrEnum
 from pathlib import Path
-from subprocess import PIPE
 
 from .formatting import bright, dim, status
+from .utils import exec_command, human_readable_duration, timed_awaitable
 
 
 class BoredomError(Exception):
     pass
 
 
-class ConfigError(Exception, ABC):
-    def __init__(self, config_file: Path):
-        self.config_file = config_file
-
-    @property
-    @abstractmethod
-    def message(self):
-        pass
-
-
-class PyprojectConfigError(ConfigError):
-    def __init__(self, config_file: Path):
-        super().__init__(config_file)
-
-    @property
-    def message(self):
-        return (
-            f'💀 Could not find [tool.powerchord(.*)] config in {self.config_file}.\n'
-            'Currently no other configuration methods are supported.'
-        )
-
-
-class FailedTasksError(Exception):
-    def __init__(self, failed_tasks: list[str]):
-        self.failed_tasks = failed_tasks
+@dataclass
+class ConfigError(Exception):
+    config_file: Path
+    message: str
 
 
 class Output(StrEnum):
@@ -68,32 +47,18 @@ class TaskRunner:
         try:
             with pyproject_file.open('rb') as f:
                 config = tomllib.load(f).get('tool', {}).get('powerchord', {})
-        except OSError:
-            config = {}
+        except OSError as exc:
+            raise ConfigError(pyproject_file, str(exc)) from exc
         if not config:
-            raise PyprojectConfigError(pyproject_file)
+            raise ConfigError(pyproject_file, 'Could not find any [tool.powerchord(.*)] entries')
         return cls(config.get('tasks', {}), Verbosity(**config.get('verbosity', {})))
 
-    async def run_tasks(self) -> None:
-        sys.stdout.write(bright('To do:\n'))
-        for name, task in self.tasks.items():
-            sys.stdout.write(f'• {name}: {dim(task)}\n')
-        sys.stdout.write(bright('\nResults:\n'))
-        async with asyncio.TaskGroup() as tg:
-            futures = [
-                tg.create_task(self.run_task(name, task))
-                for name, task in self.tasks.items()
-            ]
-        results = (future.result() for future in futures)
-        failed_tasks = [name for name, success in results if not success]
-        if failed_tasks:
-            raise FailedTasksError(failed_tasks)
-
     async def run_task(self, name: str, task: str) -> tuple[str, bool]:
-        proc = await asyncio.create_subprocess_shell(task, stdout=PIPE, stderr=PIPE)
-        out, err = await proc.communicate()
-        success = proc.returncode == 0
-        sys.stdout.write(f'{status(success)} {name}\n')
+        (success, out, err), duration = await timed_awaitable(
+            exec_command(task),
+            formatter=lambda t: dim(f'[{human_readable_duration(t)}]'),
+        )
+        sys.stdout.write(f'{status(success)} {name} {duration}\n')
         if self.verbosity.should_output(Output.OUT, success):
             sys.stdout.buffer.write(out)
             sys.stdout.buffer.flush()
@@ -102,13 +67,33 @@ class TaskRunner:
             sys.stderr.buffer.flush()
         return name, success
 
+    async def run_tasks(self) -> list[tuple[str, bool]]:
+        sys.stdout.write(bright('To do:\n'))
+        for name, task in self.tasks.items():
+            sys.stdout.write(f'• {name}: {dim(f"[{task}]")}\n')
+        sys.stdout.write(bright('\nResults:\n'))
+        futures = [
+            asyncio.create_task(self.run_task(name, task))
+            for name, task in self.tasks.items()
+        ]
+        return [await f for f in futures]
+
+
+def fail_with(*lines: str) -> None:
+    sys.exit('💀 ' + '\n'.join(lines))
+
 
 def run_tasks() -> None:
     try:
-        asyncio.run(TaskRunner.with_pyproject_config().run_tasks())
+        task_runner = TaskRunner.with_pyproject_config()
     except ConfigError as exc:
-        sys.exit(exc.message)
+        fail_with(f'Error while loading {exc.config_file}:\n{exc.message}')
     except BoredomError:
         sys.stdout.write('Nothing to do. Getting bored...\n')
-    except FailedTasksError as exc:
-        sys.exit(f'\n💀 {bright("Failed tasks:")} {", ".join(exc.failed_tasks)}')
+    else:
+        failed_tasks = [name for name, success in asyncio.run(
+            task_runner.run_tasks(),
+        ) if not success]
+        if failed_tasks:
+            sys.stderr.write('\n')
+            fail_with(bright('Failed tasks:'), ', '.join(failed_tasks))
