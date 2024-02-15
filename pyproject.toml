@@ -13,7 +13,7 @@ readme = "README.md"
 packages = [{ include = "powerchord", from = "src" }]
 include = [{ path = "tests", format = "sdist" }]
 repository = "https://github.com/githuib/powerchord"
-keywords = ["task runner", "cli utility", "concurrent"]
+keywords = ["task runner", "cli utility", "concurrency"]
 classifiers = ["Topic :: Utilities"]
 
 [tool.poetry.scripts]

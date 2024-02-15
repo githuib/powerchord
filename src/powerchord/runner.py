@@ -2,7 +2,7 @@ import asyncio
 import sys
 import tomllib
 from collections.abc import Sequence
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from enum import StrEnum
 from pathlib import Path
 
@@ -25,10 +25,10 @@ class Output(StrEnum):
     ERR = 'error'
 
 
+@dataclass
 class Verbosity:
-    def __init__(self, success: Sequence[Output] = None, fail: Sequence[Output] = None):
-        self.success = success or []
-        self.fail = fail or [Output.OUT, Output.ERR]
+    success: Sequence[Output] = field(default_factory=list)
+    fail: Sequence[Output] = field(default_factory=lambda: [Output.OUT, Output.ERR])
 
     def should_output(self, out: Output, success: bool):
         return (out in self.success) if success else (out in self.fail)
