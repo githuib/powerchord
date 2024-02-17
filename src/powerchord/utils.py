@@ -1,9 +1,10 @@
 import asyncio
-from collections.abc import Awaitable, Callable
+from collections.abc import AsyncIterator, Awaitable, Callable, Coroutine, Iterable
 from subprocess import PIPE
 from time import perf_counter_ns
-from typing import TypeVar
+from typing import Any, ParamSpec, TypeVar
 
+P = ParamSpec('P')
 T = TypeVar('T')
 
 
@@ -11,6 +12,27 @@ async def exec_command(command: str) -> tuple[bool, bytes, bytes]:
     proc = await asyncio.create_subprocess_shell(command, stdout=PIPE, stderr=PIPE)
     out, err = await proc.communicate()
     return proc.returncode == 0, out, err
+
+
+async def concurrent_iter(
+    coros: Iterable[Coroutine[Any, Any, T]],
+) -> AsyncIterator[T]:
+    tasks: list[asyncio.Task[T]] = [asyncio.create_task(coro) for coro in coros]
+    for task in tasks:
+        yield await task
+
+
+async def concurrent_list(
+    coros: Iterable[Coroutine[Any, Any, T]],
+) -> list[T]:
+    return [item async for item in concurrent_iter(coros)]
+
+
+async def concurrent_call(
+    async_func: Callable[P, Coroutine[Any, Any, T]],
+    args_list: Iterable[P.args],
+) -> list[T]:
+    return await concurrent_list(async_func(*args) for args in args_list)
 
 
 def human_readable_duration(nanoseconds: int) -> str:

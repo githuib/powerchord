@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "powerchord"
-version = "0.0.6"
+version = "0.0.7"
 description = "Concurrent CLI task runner"
 authors = ["Huib Piguillet <huib@proton.me>"]
 maintainers = ["Huib Piguillet"]
@@ -21,6 +21,7 @@ powerchord = "powerchord.runner:run_tasks"
 
 [tool.poetry.dependencies]
 python = ">=3.11,<4.0"
+chili = "*"
 
 [tool.poetry.group.qa.dependencies]
 mypy = "*"
