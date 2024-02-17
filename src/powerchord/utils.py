@@ -8,10 +8,10 @@ P = ParamSpec('P')
 T = TypeVar('T')
 
 
-async def exec_command(command: str) -> tuple[bool, bytes, bytes]:
+async def exec_command(command: str) -> tuple[bool, tuple[bytes, bytes]]:
     proc = await asyncio.create_subprocess_shell(command, stdout=PIPE, stderr=PIPE)
-    out, err = await proc.communicate()
-    return proc.returncode == 0, out, err
+    output_streams = await proc.communicate()
+    return proc.returncode == 0, output_streams
 
 
 async def concurrent_iter(

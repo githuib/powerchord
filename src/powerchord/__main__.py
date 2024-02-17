@@ -1,3 +1,3 @@
-from .runner import run_tasks
+from .cli import main
 
-run_tasks()
+main()

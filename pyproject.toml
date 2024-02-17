@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "powerchord"
-version = "0.0.7"
+version = "0.0.8"
 description = "Concurrent CLI task runner"
 authors = ["Huib Piguillet <huib@proton.me>"]
 maintainers = ["Huib Piguillet"]
@@ -17,7 +17,7 @@ keywords = ["task runner", "cli utility", "concurrency"]
 classifiers = ["Topic :: Utilities"]
 
 [tool.poetry.scripts]
-powerchord = "powerchord.runner:run_tasks"
+powerchord = "powerchord.cli:main"
 
 [tool.poetry.dependencies]
 python = ">=3.11,<4.0"
@@ -29,9 +29,10 @@ pytest = "*"
 pytest-asyncio = "*"
 ruff = "*"
 
-#[tool.powerchord.verbosity]
-#success = ["info"]
-#fail = ["info", "error"]
+[tool.powerchord.log_levels]
+#all = "info"
+#success = ""
+#fail = "info"
 
 [tool.powerchord.tasks]
 linting = "poetry run ruff check ."
@@ -121,6 +122,7 @@ select = [
 ]
 ignore = [
     "RUF013", # PEP 484 prohibits implicit `Optional`
+    "G004",  # Logging statement uses f-string
 ]
 
 [tool.ruff.lint.per-file-ignores]
