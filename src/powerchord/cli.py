@@ -1,6 +1,7 @@
 import argparse
 import asyncio
 import logging
+import sys
 import tomllib
 from collections.abc import Sequence
 from dataclasses import dataclass, field
@@ -9,7 +10,6 @@ from typing import Any
 
 from chili import TypeDecoder, decode
 
-from .formatting import bright
 from .logging import LogLevel, LogLevels, logging_context
 from .runner import TaskRunner
 
@@ -36,14 +36,16 @@ class ParseDict(argparse.Action):
         option_string: str = None,
     ) -> None:
         value_seq = [values] if isinstance(values, str) else [str(v) for v in values or []]
+        d = getattr(namespace, self.dest) or {}
         try:
             pairs = (item.split('=', 1) for item in value_seq)
-            d = {key.strip(): value for key, value in pairs}
+            d |= {key.strip(): value for key, value in pairs}
         except ValueError:
             parser.error(
                 f'argument {option_string}: not matching key1="some val" [key2="another val" ...]',
             )
-        setattr(namespace, self.dest, d)
+        else:
+            setattr(namespace, self.dest, d)
 
 
 def config_from_args() -> Config | None:
@@ -63,7 +65,7 @@ def config_from_args() -> Config | None:
 
 class FatalError(SystemExit):
     def __init__(self, *args):
-        log.error(f'💀 {" ".join(str(arg) for arg in args)}')
+        log.critical(f'💀 {" ".join(str(arg) for arg in args)}')
         super().__init__(1)
 
 
@@ -77,11 +79,6 @@ class ConfigError(FatalError):
         super().__init__(message)
 
 
-class FailedTasksError(FatalError):
-    def __init__(self, failed_tasks):
-        super().__init__(bright('Failed tasks:'), failed_tasks)
-
-
 def config_from_pyproject() -> Config | None:
     pyproject_file = 'pyproject.toml'
     try:
@@ -92,7 +89,7 @@ def config_from_pyproject() -> Config | None:
     try:
         return decode(config_dict, Config, decoders={LogLevel: LogLevelDecoder()})
     except ValueError as exc:
-        raise ConfigError(pyproject_file, str(exc)) from exc
+        raise ConfigError(pyproject_file, ' '.join(exc.args)) from exc
 
 
 def load_config() -> Config:
@@ -107,8 +104,4 @@ def main() -> None:
     config = load_config()
     task_runner = TaskRunner(config.tasks)
     with logging_context(config.log_levels):
-        results = asyncio.run(task_runner.run_tasks())
-    failed_tasks = [task for task, ok in results if not ok]
-    if failed_tasks:
-        log.error('')
-        raise FailedTasksError(failed_tasks)
+        sys.exit(not asyncio.run(task_runner.run_tasks()))

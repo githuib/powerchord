@@ -6,25 +6,34 @@
 
 ## Installation
 
-```sh
-python3 -m pip install -U powerchord
+```commandline
+pip install powerchord
 ```
 
 ## Usage
 
-Currently, tasks need to be specified in `pyproject.toml`:
+Run a number of tasks:
+
+```commandline
+powerchord -t task="command --foo bar /path/to/happiness" other-task="..."
+```
+
+For all options, see
+
+```commandline
+powerchord -h
+```
+
+Config can also be specified in `pyproject.toml`:
 
 ```toml
-# tasks to do
 [tool.powerchord.tasks]
-do-something = "command --foo bar /path/to/happiness"
-do-something-else = "..."
+task = "command --foo bar /path/to/happiness"
+other-task = "..."
 you-get-the-idea = "..."
 
-# config
-[tool.powerchord.verbosity]
-# show output of successful tasks
-success = ["info", "error"]  # default []
-# show output of failed tasks
-fail = ["info", "error"]  # default ["info", "error"]
+[tool.powerchord.log_levels]
+all = "debug" | "info" | "warning" | "error" | "critical" | ""
+success = "" # log level of successful task output
+fail = "info" # log level of failed task output 
 ```

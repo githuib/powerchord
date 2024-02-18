@@ -20,12 +20,17 @@ class TaskRunner:
                 task_log(success).log(level, stream.decode())
         return name, success
 
-    async def run_tasks(self) -> list[tuple[str, bool]]:
+    async def run_tasks(self) -> bool:
         if not self.tasks:
             log.warning('Nothing to do. Getting bored...\n')
-            return []
+            return True
         tasks = self.tasks.items()
         summary = [f'• {name.ljust(self.max_name_length)}  {dim(task)}' for name, task in tasks]
         for line in (bright('To do:'), *summary, '', bright('Results:')):
             log.info(line)
-        return await concurrent_call(self.run_task, tasks)
+        results = await concurrent_call(self.run_task, tasks)
+        failed_tasks = [task for task, ok in results if not ok]
+        if failed_tasks:
+            log.error('')
+            log.error(f'{bright("Failed tasks:")} {failed_tasks}')
+        return not failed_tasks
