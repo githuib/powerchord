@@ -18,49 +18,51 @@ def task_log(success: bool) -> logging.Logger:
 
 
 class LogLevel(IntEnum):
+    NEVER = 100
     CRITICAL = logging.CRITICAL
     ERROR = logging.ERROR
     WARNING = logging.WARNING
     INFO = logging.INFO
     DEBUG = logging.DEBUG
-    NOTSET = logging.NOTSET
 
     @classmethod
     def decode(cls, value: str) -> 'LogLevel':
-        return LogLevel(logging.getLevelName(value.upper())) if value else LogLevel.NOTSET
+        if not value:
+            return LogLevel.NEVER
+        try:
+            return LogLevel[value.upper()]
+        except KeyError as exc:
+            raise ValueError('Invalid log level:', value) from exc
 
 
 @dataclass
 class LogLevels:
-    all: LogLevel | None = LogLevel.INFO
-    success: LogLevel | None = None
-    fail: LogLevel | None = LogLevel.INFO
+    all: LogLevel = LogLevel.INFO
+    success: LogLevel = LogLevel.NEVER
+    fail: LogLevel = LogLevel.INFO
 
 
-def queue_listeners(levels: LogLevels) -> Iterator[QueueListener]:
-    if not levels.all:
-        return
+def queue_listener(levels: LogLevels) -> QueueListener | None:
+    if levels.all == LogLevel.NEVER:
+        return None
     console = logging.StreamHandler(sys.stdout)
     logging.basicConfig(handlers=[console], level=levels.all, format='%(message)s')
+    queue: Queue[logging.LogRecord] = Queue()
     for name, level in asdict(levels).items():
         logger = logging.getLogger('powerchord.' + name)
+        logger.setLevel(max(level, levels.all))
+        logger.addHandler(QueueHandler(queue))
         logger.propagate = False
-        if level:
-            queue: Queue[logging.LogRecord] = Queue()
-            queue_handler = QueueHandler(queue)
-            queue_handler.setLevel(level)
-            logger.addHandler(queue_handler)
-            listener = QueueListener(queue, console)
-            yield listener
+    return QueueListener(queue, console)
 
 
 @contextmanager
 def logging_context(levels: LogLevels) -> Iterator[None]:
-    listeners = list(queue_listeners(levels))
-    for listener in listeners:
+    listener = queue_listener(levels)
+    if listener:
         listener.start()
     try:
         yield
     finally:
-        for listener in listeners:
+        if listener:
             listener.stop()
