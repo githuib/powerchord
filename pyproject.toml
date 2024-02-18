@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "powerchord"
-version = "0.0.9"
+version = "0.1.0"
 description = "Concurrent CLI task runner"
 authors = ["Huib Piguillet <huib@proton.me>"]
 maintainers = ["Huib Piguillet"]
@@ -123,6 +123,8 @@ select = [
 ignore = [
     "RUF013", # PEP 484 prohibits implicit `Optional`
     "G004",  # Logging statement uses f-string
+    "TRY003", # Avoid specifying long messages outside the exception class
+    "EM101", # Exception must not use a string literal, assign to variable first
 ]
 
 [tool.ruff.lint.per-file-ignores]

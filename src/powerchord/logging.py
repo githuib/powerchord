@@ -28,10 +28,10 @@ class LogLevel(IntEnum):
     @classmethod
     def decode(cls, value: str) -> 'LogLevel':
         if not value:
-            return LogLevel.NEVER
+            return cls.NEVER
         try:
-            return LogLevel[value.upper()]
-        except KeyError as exc:
+            return cls[value.upper()]
+        except (AttributeError, KeyError) as exc:
             raise ValueError('Invalid log level:', value) from exc
 
 
@@ -42,9 +42,9 @@ class LogLevels:
     fail: LogLevel = LogLevel.INFO
 
 
-def queue_listener(levels: LogLevels) -> QueueListener | None:
+def setup_logging_queues(levels: LogLevels) -> Iterator[QueueListener]:
     if levels.all == LogLevel.NEVER:
-        return None
+        return
     console = logging.StreamHandler(sys.stdout)
     logging.basicConfig(handlers=[console], level=levels.all, format='%(message)s')
     queue: Queue[logging.LogRecord] = Queue()
@@ -53,16 +53,16 @@ def queue_listener(levels: LogLevels) -> QueueListener | None:
         logger.setLevel(max(level, levels.all))
         logger.addHandler(QueueHandler(queue))
         logger.propagate = False
-    return QueueListener(queue, console)
+    yield QueueListener(queue, console)
 
 
 @contextmanager
 def logging_context(levels: LogLevels) -> Iterator[None]:
-    listener = queue_listener(levels)
-    if listener:
+    queues_listeners = list(setup_logging_queues(levels))
+    for listener in queues_listeners:
         listener.start()
     try:
         yield
     finally:
-        if listener:
+        for listener in queues_listeners:
             listener.stop()
