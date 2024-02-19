@@ -39,12 +39,10 @@ class LogLevel(IntEnum):
 class LogLevels:
     all: LogLevel = LogLevel.INFO
     success: LogLevel = LogLevel.NEVER
-    fail: LogLevel = LogLevel.INFO
+    fail: LogLevel = LogLevel.ERROR
 
 
 def setup_logging_queues(levels: LogLevels) -> Iterator[QueueListener]:
-    if levels.all == LogLevel.NEVER:
-        return
     console = logging.StreamHandler(sys.stdout)
     logging.basicConfig(handlers=[console], level=levels.all, format='%(message)s')
     queue: Queue[logging.LogRecord] = Queue()

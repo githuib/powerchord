@@ -1,22 +1,34 @@
 import argparse
 import tomllib
-from collections.abc import Sequence
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any
 
 from chili import decode
 
 from .logging import LogLevel, LogLevels
+from .runner import Task
 
 
 @dataclass
 class Config:
-    tasks: dict[str, str] = field(default_factory=dict)
+    tasks: list[Task] = field(default_factory=list)
     log_levels: LogLevels = field(default_factory=LogLevels)
 
     @classmethod
     def decode(cls, value: dict) -> 'Config':
+        tasks = value.get('tasks', {})
+        if isinstance(tasks, list):
+            task_items = [('', t) if isinstance(t, str) else t for t in tasks]
+        elif isinstance(tasks, dict):
+            task_items = list(tasks.items())
+        else:
+            raise TypeError
+        value['tasks'] = [{'command': t, 'name': n} for n, t in task_items]
+
+        log_levels = value.get('log_levels', {})
+        if isinstance(log_levels, list):
+            value['log_levels'] = dict(log_levels)
+
         return decode(value, Config, decoders={LogLevel: LogLevel})
 
 
@@ -35,24 +47,16 @@ class ConfigError(FatalError):
         super().__init__(message)
 
 
-class ParseDict(argparse.Action):
-    def __call__(
-        self,
-        parser: argparse.ArgumentParser,
-        namespace: argparse.Namespace,
-        values: str | Sequence[Any] | None,
-        option_string: str = None,
-    ) -> None:
-        value_seq = [values] if isinstance(values, str) else [str(v) for v in values or []]
-        try:
-            pairs = (item.split('=', 1) for item in value_seq)
-            new_pairs = {key.strip(): value for key, value in pairs}
-        except ValueError:
-            parser.error(
-                f'argument {option_string}: not matching pattern key1=val1 [key2=val2 ...]',
-            )
-        else:
-            setattr(namespace, self.dest, (getattr(namespace, self.dest) or {}) | new_pairs)
+def parse_key_value_pair(value: str) -> tuple[str, str]:
+    key, value = value.split('=', 1)
+    return key, value
+
+
+def try_parse_key_value_pair(value: str) -> str | tuple[str, str]:
+    try:
+        return parse_key_value_pair(value)
+    except ValueError:
+        return value
 
 
 def config_from_args(_config_source: str) -> Config | None:
@@ -62,8 +66,8 @@ def config_from_args(_config_source: str) -> Config | None:
         '--tasks',
         dest='tasks',
         nargs='+',
-        metavar='NAME=COMMAND',
-        action=ParseDict,
+        metavar='COMMAND | NAME=COMMAND',
+        type=try_parse_key_value_pair,
         default={},
     )
     arg_parser.add_argument(
@@ -71,8 +75,8 @@ def config_from_args(_config_source: str) -> Config | None:
         '--log-levels',
         dest='log_levels',
         nargs='+',
-        metavar='NAME=COMMAND',
-        action=ParseDict,
+        metavar='OUTPUT=LOGLEVEL (debug | info | warning | error | critical | "")',
+        type=parse_key_value_pair,
         default={},
     )
     config_dict = arg_parser.parse_args().__dict__
