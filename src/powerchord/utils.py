@@ -32,7 +32,10 @@ async def concurrent_call(
     async_func: Callable[P, Coroutine[Any, Any, T]],
     args_list: Iterable[P.args],
 ) -> list[T]:
-    return await concurrent_list(async_func(*args) for args in args_list)
+    return await concurrent_list(
+        async_func(*args) if isinstance(args, Iterable) else async_func(args)
+        for args in args_list
+    )
 
 
 def human_readable_duration(nanoseconds: int) -> str:

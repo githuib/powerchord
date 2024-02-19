@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "powerchord"
-version = "0.1.0"
+version = "0.1.1"
 description = "Concurrent CLI task runner"
 authors = ["Huib Piguillet <huib@proton.me>"]
 maintainers = ["Huib Piguillet"]
@@ -29,15 +29,18 @@ pytest = "*"
 pytest-asyncio = "*"
 ruff = "*"
 
+[tool.powerchord]
+tasks = ["ruff check .", "pytest", "mypy"]
+
+#[tool.powerchord.tasks]
+#linting = "poetry run ruff check ."
+#tests = "poetry run pytest"
+#type-checking = "poetry run mypy"
+
 [tool.powerchord.log_levels]
 #all = "info"
 #success = ""
-#fail = "info"
-
-[tool.powerchord.tasks]
-linting = "poetry run ruff check ."
-tests = "poetry run pytest"
-type-checking = "poetry run mypy"
+#fail = "error"
 
 [tool.mypy]
 files = ["src", "tests"]

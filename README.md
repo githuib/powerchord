@@ -15,10 +15,47 @@ pip install powerchord
 Run a number of tasks:
 
 ```commandline
-powerchord -t task="command --foo bar /path/to/happiness" other-task="..."
+$ powerchord -t "ruff check ." pytest mypy
+✔ ruff check .  21.075 ms
+✔ mypy          166.433 ms
+✔ pytest        187.096 ms
 ```
 
-For all options, see
+Tasks can be labeled by passing them as NAME=COMMAND values:
+
+```commandline
+$ powerchord -t lint="ruff check ." test=pytest typing=mypy
+To do:
+• lint    ruff check .
+• test    pytest
+• typing  mypy
+
+Results:
+✔ lint    48.452 ms
+✔ typing  202.403 ms
+✔ test    286.231 ms
+```
+
+Verbosity can be specified for all output, for successful tasks and for failed tasks by setting log levels:
+
+```commandline
+$ powerchord -t "ruff chekc ." pytest mypy -l all=info success=info fail=error
+✘ ruff chekc .  126.852 ms
+chekc:1:1: E902 No such file or directory (os error 2)
+Found 1 error.
+
+✔ pytest        255.197 ms
+..                                                                       [100%]
+2 passed in 0.03s
+
+✔ mypy          542.490 ms
+Success: no issues found in 11 source files
+
+
+✘ Failed tasks: ['ruff chekc .']
+```
+
+For all options see the help:
 
 ```commandline
 powerchord -h
@@ -33,7 +70,7 @@ other-task = "..."
 you-get-the-idea = "..."
 
 [tool.powerchord.log_levels]
-all = "debug" | "info" | "warning" | "error" | "critical" | ""
+all = "info" # "debug" | "info" | "warning" | "error" | "critical" | ""
 success = "" # log level of successful task output
-fail = "info" # log level of failed task output 
+fail = "error" # log level of failed task output 
 ```
