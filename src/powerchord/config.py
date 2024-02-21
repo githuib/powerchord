@@ -33,12 +33,12 @@ class Config:
 
 
 class FatalError(SystemExit):
-    def __init__(self, *args):
+    def __init__(self, *args) -> None:
         super().__init__(f'💀 {" ".join(str(arg) for arg in args)}')
 
 
 class ConfigError(FatalError):
-    def __init__(self, config_source: str = None, *args):
+    def __init__(self, config_source: str = None, *args) -> None:
         message = 'Could not load config'
         if config_source:
             message += f' from {config_source}'

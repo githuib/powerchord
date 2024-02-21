@@ -1,9 +1,20 @@
+import os
+import sys
 from collections.abc import Callable
+from functools import cache
+
+
+@cache
+def has_colors() -> bool:
+    no = 'NO_COLOR' in os.environ
+    yes = 'CLICOLOR_FORCE' in os.environ
+    maybe = sys.stdout.isatty()
+    return not no and (yes or maybe)
 
 
 def _wrap_ansi_code(value: int) -> Callable[[str], str]:
     def wrapper(s: str) -> str:
-        return f'\033[{value}m{s}\033[0m'
+        return f'\033[{value}m{s}\033[0m' if has_colors() else s
     return wrapper
 
 
