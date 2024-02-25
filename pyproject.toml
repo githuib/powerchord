@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "powerchord"
-version = "0.1.2"
+version = "0.1.3"
 description = "Concurrent CLI task runner"
 authors = ["Huib Piguillet <huib@proton.me>"]
 maintainers = ["Huib Piguillet"]
@@ -22,6 +22,7 @@ powerchord = "powerchord.cli:main"
 [tool.poetry.dependencies]
 python = ">=3.11,<4.0"
 chili = "*"
+gaffe = "*"
 
 [tool.poetry.group.qa.dependencies]
 mypy = "*"
@@ -47,6 +48,7 @@ files = ["src", "tests"]
 implicit_optional = true
 warn_redundant_casts = true
 warn_unused_ignores = true
+plugins = "gaffe.mypy:plugin"
 
 [tool.pytest.ini_options]
 addopts = "-ra -q --doctest-modules"
@@ -129,7 +131,7 @@ ignore = [
     "RUF013", # PEP 484 prohibits implicit `Optional`
     "G004",  # Logging statement uses f-string
     "TRY003", # Avoid specifying long messages outside the exception class
-    "EM101", # Exception must not use a string literal, assign to variable first
+    "EM101", "EM102", # Exception must not use a string literal, assign to variable first
 ]
 
 [tool.ruff.lint.per-file-ignores]

@@ -8,6 +8,8 @@ from logging.handlers import QueueHandler, QueueListener
 from multiprocessing import Queue
 from typing import TypeVar
 
+from gaffe import raises
+
 T = TypeVar('T')
 
 ASYNC_LOG = logging.getLogger('powerchord.all')
@@ -26,6 +28,7 @@ class LogLevel(IntEnum):
     DEBUG = logging.DEBUG
 
     @classmethod
+    @raises(ValueError)
     def decode(cls, value: str) -> 'LogLevel':
         if not value:
             return cls.NEVER

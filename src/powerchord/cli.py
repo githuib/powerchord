@@ -1,11 +1,14 @@
 import asyncio
 import sys
 
-from .config import load_config
+from .config import LoadConfigError, load_config
 from .logging import logging_context
 from .runner import TaskRunner
+from .utils import catch_unknown_errors, killed_by
 
 
+@catch_unknown_errors()
+@killed_by(LoadConfigError)
 def main() -> None:
     config = load_config()
     with logging_context(config.log_levels):
