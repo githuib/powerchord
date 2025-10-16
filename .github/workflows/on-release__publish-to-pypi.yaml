@@ -8,8 +8,13 @@ jobs:
   publish-package:
     runs-on: ubuntu-latest
 
+    environment:
+      name: pypi
+      url: https://pypi.org/p/powerchord
+
     permissions:
-      contents: write
+      contents: write  # to push version bump to git
+      id-token: write  # mandatory for Trusted Publishing
 
     steps:
       - uses: actions/checkout@v5
@@ -25,14 +30,18 @@ jobs:
           cache: poetry
 
       - name: Run QA checks
-        run: scripts/check_code_quality.sh
+        run: |
+          poetry install --no-interaction --no-plugins
+          poetry run powerchord
 
-      - name: Sync package version with the new release
-        run: scripts/bump_version.sh
+      - name: Bump package version
+        run: scripts/bump_package_version.sh
         env:
           RELEASE_VERSION: ${{ github.event.release.tag_name }}
 
-      - name: Publish PyPi package
-        run: scripts/publish_package.sh
-        env:
-          PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
+      - name: Build package
+        run: |
+          poetry build --no-interaction --no-plugins
+
+      - name: Publish package to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1

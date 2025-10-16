@@ -33,10 +33,6 @@ dependencies = [
     "gaffe",
 ]
 
-[project.urls]
-PyPI = "https://pypi.org/project/powerchord/"
-Github = "https://github.com/githuib/powerchord"
-
 [dependency-groups]
 qa = [
     "mypy",
@@ -44,6 +40,10 @@ qa = [
     "pytest-asyncio",
     "ruff",
 ]
+
+[project.urls]
+PyPI = "https://pypi.org/project/powerchord/"
+Github = "https://github.com/githuib/powerchord"
 
 [project.scripts]
 powerchord = "powerchord.cli:main"
