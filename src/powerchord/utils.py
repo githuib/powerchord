@@ -3,11 +3,7 @@ from collections.abc import AsyncIterator, Awaitable, Callable, Coroutine, Itera
 from functools import wraps
 from subprocess import PIPE
 from time import perf_counter_ns
-from typing import Any, ParamSpec, TypeVar
-
-T = TypeVar('T')
-E = TypeVar('E', bound=Exception)
-P = ParamSpec('P')
+from typing import Any
 
 
 class FatalError(SystemExit):
@@ -15,7 +11,9 @@ class FatalError(SystemExit):
         super().__init__(' '.join(str(a) for a in ['💀', *args]))
 
 
-def killed_by(*errors: type[E]) -> Callable[[Callable[P, T]], Callable[P, T]]:
+def killed_by[E: Exception, **P, T](
+        *errors: type[E],
+) -> Callable[[Callable[P, T]], Callable[P, T]]:
     def decorator(func: Callable[P, T]) -> Callable[P, T]:
         @wraps(func)
         def wrapper(*args: P.args, **kwargs: P.kwargs) -> T:
@@ -27,7 +25,7 @@ def killed_by(*errors: type[E]) -> Callable[[Callable[P, T]], Callable[P, T]]:
     return decorator
 
 
-def catch_unknown_errors(
+def catch_unknown_errors[**P, T](
     unknown_message: str = 'Unknown error',
 ) -> Callable[[Callable[P, T]], Callable[P, T]]:
     def decorator(func: Callable[P, T]) -> Callable[P, T]:
@@ -35,7 +33,7 @@ def catch_unknown_errors(
         def wrapper(*args: P.args, **kwargs: P.kwargs) -> T:
             try:
                 return func(*args, **kwargs)
-            except Exception as exc:  # noqa: BLE001
+            except Exception as exc:
                 raise FatalError(unknown_message) from exc
         return wrapper
     return decorator
@@ -47,28 +45,25 @@ async def exec_command(command: str) -> tuple[bool, tuple[bytes, bytes]]:
     return proc.returncode == 0, output_streams
 
 
-async def concurrent_iter(
-    coros: Iterable[Coroutine[Any, Any, T]],
+async def concurrent_iter[T](
+    coroutines: Iterable[Coroutine[Any, Any, T]],
 ) -> AsyncIterator[T]:
-    tasks: list[asyncio.Task[T]] = [asyncio.create_task(coro) for coro in coros]
+    tasks: list[asyncio.Task[T]] = [asyncio.create_task(coro) for coro in coroutines]
     for task in tasks:
         yield await task
 
 
-async def concurrent_list(
-    coros: Iterable[Coroutine[Any, Any, T]],
+async def concurrent_list[T](
+    coroutines: Iterable[Coroutine[Any, Any, T]],
 ) -> list[T]:
-    return [item async for item in concurrent_iter(coros)]
+    return [item async for item in concurrent_iter(coroutines)]
 
 
-async def concurrent_call(
-    async_func: Callable[P, Coroutine[Any, Any, T]],
-    args_list: Iterable[P.args],
+async def concurrent_call[A, T](
+    async_func: Callable[[A], Coroutine[Any, Any, T]],
+    args_list: list[A],
 ) -> list[T]:
-    return await concurrent_list(
-        async_func(*args) if isinstance(args, Iterable) else async_func(args)
-        for args in args_list
-    )
+    return await concurrent_list(async_func(args) for args in args_list)
 
 
 def human_readable_duration(nanoseconds: int) -> str:
@@ -89,7 +84,7 @@ def human_readable_duration(nanoseconds: int) -> str:
     return f'{microseconds:d}.{nanoseconds:03d} µs'
 
 
-def timed(
+def timed[T](
     func: Callable[[], T],
     formatter: Callable[[int], str] = None,
 ) -> tuple[T, str]:
@@ -97,7 +92,7 @@ def timed(
     return func(), (formatter or human_readable_duration)(perf_counter_ns() - start)
 
 
-def timed_awaitable(
+def timed_awaitable[T](
     awaitable: Awaitable[T],
     formatter: Callable[[int], str] = None,
 ) -> Awaitable[tuple[T, str]]:

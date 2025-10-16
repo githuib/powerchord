@@ -1,34 +1,44 @@
 [build-system]
-requires = ["poetry-core>=1.0.0"]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
 
-[tool.poetry]
+[project]
 name = "powerchord"
-version = "0.1.4"
+version = "0.2.0"
 description = "Concurrent CLI task runner"
-authors = ["Huib Piguillet <huib@proton.me>"]
-maintainers = ["Huib Piguillet"]
+requires-python = ">=3.12"
+authors = [
+    { name = "Huib Piguillet", email = "huib@proton.me" },
+]
 license = "MIT"
 readme = "README.md"
-packages = [{ include = "powerchord", from = "src" }]
-include = [{ path = "tests", format = "sdist" }]
+homepage = "https://pypi.org/project/powerchord/"
 repository = "https://github.com/githuib/powerchord"
 keywords = ["task runner", "cli utility", "concurrency"]
 classifiers = ["Topic :: Utilities"]
+dependencies = [
+    "chili",
+    "gaffe",
+]
 
-[tool.poetry.scripts]
+[dependency-groups]
+qa = [
+    "mypy",
+    "pytest",
+    "pytest-asyncio",
+    "ruff",
+]
+
+[project.scripts]
 powerchord = "powerchord.cli:main"
 
-[tool.poetry.dependencies]
-python = ">=3.11,<4.0"
-chili = "*"
-gaffe = "*"
+[tool.poetry]
+requires-poetry = ">=2.0"
+packages = [{ include = "powerchord", from = "src" }]
+include = [{ path = "tests", format = "sdist" }]
 
-[tool.poetry.group.qa.dependencies]
-mypy = "*"
-pytest = "*"
-pytest-asyncio = "*"
-ruff = "*"
+[tool.poetry.dependencies]
+python = ">=3.12,<4.0"
 
 [tool.powerchord]
 tasks = ["ruff check .", "pytest", "mypy"]
@@ -38,13 +48,14 @@ tasks = ["ruff check .", "pytest", "mypy"]
 #tests = "poetry run pytest"
 #type-checking = "poetry run mypy"
 
-[tool.powerchord.log_levels]
-#all = "info"
-#success = ""
+#[tool.powerchord.log_levels]
+#all = "indfo"
+#success = "info"
 #fail = "error"
 
 [tool.mypy]
 files = ["src", "tests"]
+#color_output = true
 implicit_optional = true
 warn_redundant_casts = true
 warn_unused_ignores = true
@@ -57,7 +68,7 @@ asyncio_mode = "auto"
 [tool.ruff]
 indent-width = 4
 line-length = 100
-target-version = "py311"
+target-version = "py312"
 
 [tool.ruff.lint.flake8-quotes]
 inline-quotes = "single"

@@ -6,11 +6,8 @@ from dataclasses import asdict, dataclass
 from enum import IntEnum
 from logging.handlers import QueueHandler, QueueListener
 from multiprocessing import Queue
-from typing import TypeVar
 
 from gaffe import raises
-
-T = TypeVar('T')
 
 ASYNC_LOG = logging.getLogger('powerchord.all')
 

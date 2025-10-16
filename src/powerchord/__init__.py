@@ -3,9 +3,9 @@ from .logging import LogLevel, LogLevels, logging_context
 from .runner import Task, TaskRunner
 
 __all__ = [
+    'CLIConfig',
     'Config',
     'ConfigLoader',
-    'CLIConfig',
     'LoadConfigError',
     'LogLevel',
     'LogLevels',
