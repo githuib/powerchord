@@ -12,14 +12,16 @@ authors = [
 ]
 license = "MIT"
 readme = "README.md"
-homepage = "https://pypi.org/project/powerchord/"
-repository = "https://github.com/githuib/powerchord"
 keywords = ["task runner", "cli utility", "concurrency"]
 classifiers = ["Topic :: Utilities"]
 dependencies = [
     "chili",
     "gaffe",
 ]
+
+[project.urls]
+PyPI = "https://pypi.org/project/powerchord/"
+Github = "https://github.com/githuib/powerchord"
 
 [dependency-groups]
 qa = [
