@@ -1,0 +1,38 @@
+name: Build and publish python package
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  publish-package:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: master  # would be refs/tags/x.y.z otherwise
+
+      - name: Install Poetry
+        run: pipx install poetry==2.2.0
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          cache: poetry
+
+      - name: Run QA checks
+        run: scripts/check_code_quality.sh
+
+      - name: Sync package version with the new release
+        run: scripts/bump_version.sh
+        env:
+          RELEASE_VERSION: ${{ github.event.release.tag_name }}
+
+      - name: Publish PyPi package
+        run: scripts/publish_package.sh
+        env:
+          PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
