@@ -12,11 +12,7 @@ authors = [
 ]
 license = "MIT"
 readme = "README.md"
-keywords = [
-    "task runner",
-    "cli utility",
-    "concurrency",
-]
+keywords = ["task runner", "cli utility", "concurrency"]
 classifiers = [
     "Intended Audience :: Developers",
     "Topic :: Utilities",
@@ -28,18 +24,10 @@ classifiers = [
     "Programming Language :: Python :: 3 :: Only",
 ]
 
-dependencies = [
-    "chili",
-    "gaffe",
-]
+dependencies = ["chili", "gaffe"]
 
 [dependency-groups]
-qa = [
-    "mypy",
-    "pytest",
-    "pytest-asyncio",
-    "ruff",
-]
+qa = ["mypy", "pytest", "pytest-asyncio", "ruff"]
 
 [project.urls]
 PyPI = "https://pypi.org/project/powerchord/"
