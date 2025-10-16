@@ -6,15 +6,16 @@ from functools import cache
 
 @cache
 def has_colors() -> bool:
-    no = 'NO_COLOR' in os.environ
-    yes = 'CLICOLOR_FORCE' in os.environ
+    no = "NO_COLOR" in os.environ
+    yes = "CLICOLOR_FORCE" in os.environ
     maybe = sys.stdout.isatty()
     return not no and (yes or maybe)
 
 
 def _wrap_ansi_code(value: int) -> Callable[[str], str]:
     def wrapper(s: str) -> str:
-        return f'\033[{value}m{s}\033[0m' if has_colors() else s
+        return f"\033[{value}m{s}\033[0m" if has_colors() else s
+
     return wrapper
 
 
@@ -39,8 +40,8 @@ light_magenta = _wrap_ansi_code(95)
 light_cyan = _wrap_ansi_code(96)
 white = _wrap_ansi_code(97)
 
-OK = green('✔')
-FAIL = red('✘')
+OK = green("✔")
+FAIL = red("✘")
 
 
 def status(success: bool) -> str:

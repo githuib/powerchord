@@ -46,18 +46,18 @@ class ConfigLoader(ABC):
         if not any(config_dict.values()):
             return None
 
-        tasks = config_dict.get('tasks', {})
+        tasks = config_dict.get("tasks", {})
         if isinstance(tasks, list):
-            task_items = [('', t) if isinstance(t, str) else t for t in tasks]
+            task_items = [("", t) if isinstance(t, str) else t for t in tasks]
         elif isinstance(tasks, dict):
             task_items = list(tasks.items())
         else:
-            raise DecodeConfigError(f'Wrong value for tasks: {tasks}')
-        config_dict['tasks'] = [{'command': t, 'name': n} for n, t in task_items]
+            raise DecodeConfigError(f"Wrong value for tasks: {tasks}")
+        config_dict["tasks"] = [{"command": t, "name": n} for n, t in task_items]
 
-        log_levels = config_dict.get('log_levels', {})
+        log_levels = config_dict.get("log_levels", {})
         if isinstance(log_levels, list):
-            config_dict['log_levels'] = dict(log_levels)
+            config_dict["log_levels"] = dict(log_levels)
 
         try:
             return decode(config_dict, Config, decoders={LogLevel: LogLevel})
@@ -66,7 +66,7 @@ class ConfigLoader(ABC):
 
 
 def parse_key_value_pair(value: str) -> tuple[str, str]:
-    key, value = value.split('=', 1)
+    key, value = value.split("=", 1)
     return key, value
 
 
@@ -78,26 +78,26 @@ def try_parse_key_value_pair(value: str) -> str | tuple[str, str]:
 
 
 class CLIConfig(ConfigLoader):
-    name = 'command line'
+    name = "command line"
 
     @classmethod
     @raises(ParseConfigError)
     def _parse(cls) -> dict:
         arg_parser = argparse.ArgumentParser()
         arg_parser.add_argument(
-            '-t',
-            '--tasks',
-            dest='tasks',
-            nargs='+',
-            metavar='COMMAND | NAME=COMMAND',
+            "-t",
+            "--tasks",
+            dest="tasks",
+            nargs="+",
+            metavar="COMMAND | NAME=COMMAND",
             type=try_parse_key_value_pair,
             default={},
         )
         arg_parser.add_argument(
-            '-l',
-            '--log-levels',
-            dest='log_levels',
-            nargs='+',
+            "-l",
+            "--log-levels",
+            dest="log_levels",
+            nargs="+",
             metavar='OUTPUT=LOGLEVEL (debug | info | warning | error | critical | "")',
             type=parse_key_value_pair,
             default={},
@@ -109,14 +109,14 @@ class CLIConfig(ConfigLoader):
 
 
 class PyprojectConfig(ConfigLoader):
-    name = 'pyproject.toml'
+    name = "pyproject.toml"
 
     @classmethod
     @raises(ParseConfigError)
     def _parse(cls) -> dict:
         try:
-            with Path('pyproject.toml').open('rb') as f:
-                return tomllib.load(f).get('tool', {}).get('powerchord', {})
+            with Path("pyproject.toml").open("rb") as f:
+                return tomllib.load(f).get("tool", {}).get("powerchord", {})
         except OSError:
             return {}
         except ValueError as exc:
@@ -124,13 +124,13 @@ class PyprojectConfig(ConfigLoader):
 
 
 class LoadConfigError(Exception):
-    def __init__(self, name: str = '', *args):
-        super().__init__(f'Could not load config{name}{":" if args else ""}', *args)
+    def __init__(self, name: str = "", *args):
+        super().__init__(f"Could not load config{name}{':' if args else ''}", *args)
 
 
 class LoadSpecificConfigError(LoadConfigError):
     def __init__(self, name: str, *args):
-        super().__init__(f' from {name}', *args)
+        super().__init__(f" from {name}", *args)
 
 
 @raises(LoadConfigError)

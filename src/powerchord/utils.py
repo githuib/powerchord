@@ -8,11 +8,11 @@ from typing import Any
 
 class FatalError(SystemExit):
     def __init__(self, *args):
-        super().__init__(' '.join(str(a) for a in ['💀', *args]))
+        super().__init__(" ".join(str(a) for a in ["💀", *args]))
 
 
 def killed_by[E: Exception, **P, T](
-        *errors: type[E],
+    *errors: type[E],
 ) -> Callable[[Callable[P, T]], Callable[P, T]]:
     def decorator(func: Callable[P, T]) -> Callable[P, T]:
         @wraps(func)
@@ -21,12 +21,14 @@ def killed_by[E: Exception, **P, T](
                 return func(*args, **kwargs)
             except errors as exc:
                 raise FatalError(*exc.args) from exc
+
         return wrapper
+
     return decorator
 
 
 def catch_unknown_errors[**P, T](
-    unknown_message: str = 'Unknown error',
+    unknown_message: str = "Unknown error",
 ) -> Callable[[Callable[P, T]], Callable[P, T]]:
     def decorator(func: Callable[P, T]) -> Callable[P, T]:
         @wraps(func)
@@ -35,7 +37,9 @@ def catch_unknown_errors[**P, T](
                 return func(*args, **kwargs)
             except Exception as exc:
                 raise FatalError(unknown_message) from exc
+
         return wrapper
+
     return decorator
 
 
@@ -76,12 +80,12 @@ def human_readable_duration(nanoseconds: int) -> str:
     microseconds = int(nanoseconds // 1_000)
     nanoseconds %= 1_000
     if minutes:
-        return f'{minutes:d}:{seconds:02d}.{milliseconds:03d} minutes'
+        return f"{minutes:d}:{seconds:02d}.{milliseconds:03d} minutes"
     if seconds:
-        return f'{seconds:d}.{milliseconds:03d} seconds'
+        return f"{seconds:d}.{milliseconds:03d} seconds"
     if milliseconds:
-        return f'{milliseconds:d}.{microseconds:03d} ms'
-    return f'{microseconds:d}.{nanoseconds:03d} µs'
+        return f"{milliseconds:d}.{microseconds:03d} ms"
+    return f"{microseconds:d}.{nanoseconds:03d} µs"
 
 
 def timed[T](
@@ -98,5 +102,8 @@ def timed_awaitable[T](
 ) -> Awaitable[tuple[T, str]]:
     async def wrapper() -> tuple[T, str]:
         start = perf_counter_ns()
-        return await awaitable, (formatter or human_readable_duration)(perf_counter_ns() - start)
+        return await awaitable, (formatter or human_readable_duration)(
+            perf_counter_ns() - start
+        )
+
     return wrapper()

@@ -71,11 +71,7 @@ asyncio_mode = "auto"
 
 [tool.ruff]
 indent-width = 4
-line-length = 100
 target-version = "py312"
-
-[tool.ruff.lint.flake8-quotes]
-inline-quotes = "single"
 
 [tool.ruff.lint]
 # Enable Pyflakes (`F`) and a subset of the pycodestyle (`E`)  codes by default.
@@ -143,6 +139,7 @@ select = [
     "RUF", # Ruff-specific rules
 ]
 ignore = [
+    "COM812", # may cause conflicts when used with the formatter
     "RUF013", # PEP 484 prohibits implicit `Optional`
     "G004",  # Logging statement uses f-string
     "TRY003", # Avoid specifying long messages outside the exception class
