@@ -1,4 +1,4 @@
-name: Build and publish python package
+name: Publish package to PyPI
 
 on:
   release:
@@ -6,42 +6,13 @@ on:
 
 jobs:
   publish-package:
-    runs-on: ubuntu-latest
-
-    environment:
-      name: pypi
-      url: https://pypi.org/p/powerchord
-
+    name: Publish package to PyPI
+    uses: githuib/base/.github/workflows/publish-to-pypi.yaml@master
+    secrets: inherit
+    with:
+      package-name: powerchord
+      package-version: ${{ github.event.release.tag_name }}
     permissions:
       contents: write  # to push version bump to git
       id-token: write  # mandatory for Trusted Publishing
 
-    steps:
-      - uses: actions/checkout@v5
-        with:
-          ref: master  # would be refs/tags/x.y.z otherwise
-
-      - name: Install Poetry
-        run: pipx install poetry==2.2.0
-
-      - name: Setup Python
-        uses: actions/setup-python@v6
-        with:
-          cache: poetry
-
-      - name: Run QA checks
-        run: |
-          poetry install --no-interaction --no-plugins
-          poetry run powerchord
-
-      - name: Bump package version
-        run: scripts/bump_package_version.sh
-        env:
-          RELEASE_VERSION: ${{ github.event.release.tag_name }}
-
-      - name: Build package
-        run: |
-          poetry build --no-interaction --no-plugins
-
-      - name: Publish package to PyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
