@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [project]
 name = "powerchord"
-version = "0.2.6"
+version = "0.2.7"
 description = "Concurrent CLI task runner"
 requires-python = ">=3.12"
 authors = [

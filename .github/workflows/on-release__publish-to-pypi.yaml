@@ -10,9 +10,7 @@ jobs:
     uses: githuib/base/.github/workflows/publish-to-pypi.yaml@master
     secrets: inherit
     with:
-      package-name: powerchord
-      package-version: ${{ github.event.release.tag_name }}
+      release-version: ${{ github.event.release.tag_name }}
     permissions:
       contents: write  # to push version bump to git
-      id-token: write  # mandatory for Trusted Publishing
-
+#      id-token: write  # mandatory for Trusted Publishing
