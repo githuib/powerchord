@@ -1,16 +1,11 @@
 name: Publish package to PyPI
 
 on:
-  release:
-    types: [published]
+  push:
+    tags: ['v*.*.*']
 
 jobs:
   publish-package:
     name: Publish package to PyPI
     uses: githuib/base/.github/workflows/publish-to-pypi.yaml@master
     secrets: inherit
-    with:
-      release-version: ${{ github.event.release.tag_name }}
-    permissions:
-      contents: write  # to push version bump to git
-#      id-token: write  # mandatory for Trusted Publishing
