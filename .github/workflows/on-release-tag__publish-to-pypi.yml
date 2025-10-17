@@ -1,0 +1,38 @@
+name: Publish package to PyPI
+
+on:
+  push:
+    tags: ['v*.*.*']
+
+jobs:
+  build:
+    name: Build Poetry project into distributable package
+    uses: githuib/base/.github/workflows/py__build-poetry-project.yml@master
+
+  publish:
+    name: Publish package to PyPI
+    needs: build
+    runs-on: ubuntu-latest
+
+    environment:
+      name: pypi
+      url: https://pypi.org/p/powerchord
+
+    permissions:
+      contents: write  # to create release on github
+      id-token: write # Required for PyPI Trusted Publishing.
+
+    steps:
+      - name: Download package
+        uses: actions/download-artifact@v5
+        with:
+          name: python-package-distributions
+          path: dist/
+
+      - name: Publish package
+        uses: pypa/gh-action-pypi-publish@release/v1
+
+      - name: Create Release
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "dist/*"
