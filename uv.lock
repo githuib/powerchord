@@ -3,6 +3,15 @@ revision = 3
 requires-python = ">=3.12"
 
 [[package]]
+name = "based-utils"
+version = "0.1.3"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/97/5e/8befa0858256f1cdebd137e94bafc759452e7a9a0bc1d1e191e0b20bd5d0/based_utils-0.1.3.tar.gz", hash = "sha256:bfabd5c21559a0a177b010a630fa4661cb91c1d6e1cc0338a750e23e5808c5fe", size = 3832, upload-time = "2025-11-12T20:05:18.026Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/2a/69/bc4009689c6385ae6588351ed44a5c174e0875aa848ad651c4c09e05c442/based_utils-0.1.3-py3-none-any.whl", hash = "sha256:03e332291f8387ed976ecc50c91eaa9983931834be74bc3f26530921bf3582a2", size = 4066, upload-time = "2025-11-12T20:05:16.8Z" },
+]
+
+[[package]]
 name = "chili"
 version = "2.9.0"
 source = { registry = "https://pypi.org/simple" }
@@ -115,6 +124,7 @@ name = "powerchord"
 version = "0.2.11"
 source = { editable = "." }
 dependencies = [
+    { name = "based-utils" },
     { name = "chili" },
     { name = "gaffe" },
 ]
@@ -129,6 +139,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
+    { name = "based-utils" },
     { name = "chili" },
     { name = "gaffe" },
 ]

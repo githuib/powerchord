@@ -1,8 +1,7 @@
 import asyncio
-from collections.abc import AsyncIterator, Awaitable, Callable, Coroutine, Iterable
+from collections.abc import AsyncIterator, Callable, Coroutine, Iterable
 from functools import wraps
 from subprocess import PIPE
-from time import perf_counter_ns
 from typing import Any
 
 
@@ -57,53 +56,11 @@ async def concurrent_iter[T](
         yield await task
 
 
-async def concurrent_list[T](
-    coroutines: Iterable[Coroutine[Any, Any, T]],
-) -> list[T]:
+async def concurrent_list[T](coroutines: Iterable[Coroutine[Any, Any, T]]) -> list[T]:
     return [item async for item in concurrent_iter(coroutines)]
 
 
 async def concurrent_call[A, T](
-    async_func: Callable[[A], Coroutine[Any, Any, T]],
-    args_list: list[A],
+    async_func: Callable[[A], Coroutine[Any, Any, T]], args_list: list[A]
 ) -> list[T]:
     return await concurrent_list(async_func(args) for args in args_list)
-
-
-def human_readable_duration(nanoseconds: int) -> str:
-    minutes = int(nanoseconds // 60_000_000_000)
-    nanoseconds %= 60_000_000_000
-    seconds = int(nanoseconds // 1_000_000_000)
-    nanoseconds %= 1_000_000_000
-    milliseconds = int(nanoseconds // 1_000_000)
-    nanoseconds %= 1_000_000
-    microseconds = int(nanoseconds // 1_000)
-    nanoseconds %= 1_000
-    if minutes:
-        return f"{minutes:d}:{seconds:02d}.{milliseconds:03d} minutes"
-    if seconds:
-        return f"{seconds:d}.{milliseconds:03d} seconds"
-    if milliseconds:
-        return f"{milliseconds:d}.{microseconds:03d} ms"
-    return f"{microseconds:d}.{nanoseconds:03d} µs"
-
-
-def timed[T](
-    func: Callable[[], T],
-    formatter: Callable[[int], str] = None,
-) -> tuple[T, str]:
-    start = perf_counter_ns()
-    return func(), (formatter or human_readable_duration)(perf_counter_ns() - start)
-
-
-def timed_awaitable[T](
-    awaitable: Awaitable[T],
-    formatter: Callable[[int], str] = None,
-) -> Awaitable[tuple[T, str]]:
-    async def wrapper() -> tuple[T, str]:
-        start = perf_counter_ns()
-        return await awaitable, (formatter or human_readable_duration)(
-            perf_counter_ns() - start
-        )
-
-    return wrapper()

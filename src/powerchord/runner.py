@@ -1,9 +1,11 @@
 import logging
 from dataclasses import dataclass
 
+from based_utils.utils.cli import human_readable_duration, timed_awaitable
+
 from .formatting import FAIL, OK, bright, dim
 from .logging import ASYNC_LOG, task_log
-from .utils import concurrent_call, exec_command, timed_awaitable
+from .utils import concurrent_call, exec_command
 
 log = ASYNC_LOG
 
@@ -48,10 +50,15 @@ class TaskRunner:
     async def _run_task(self, task: Task) -> tuple[str, bool]:
         (ok, (out, err)), duration = await timed_awaitable(exec_command(task.command))
         log_level = logging.INFO if ok else logging.ERROR
-        log.log(log_level, self._task_line(OK if ok else FAIL, task, duration))
-        tl = task_log("success" if ok else "fail", log_level)
+        log.log(
+            log_level,
+            self._task_line(
+                OK if ok else FAIL, task, human_readable_duration(duration)
+            ),
+        )
+        log_task = task_log("success" if ok else "fail", log_level)
         if out:
-            tl(out.decode())
+            log_task(out.decode())
         if err:
-            tl(err.decode())
+            log_task(err.decode())
         return task.id, ok

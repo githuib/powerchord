@@ -22,6 +22,7 @@ classifiers = [
     "Programming Language :: Python :: 3 :: Only",
 ]
 dependencies = [
+    "based-utils",
     "chili",
     "gaffe",
 ]
@@ -45,18 +46,6 @@ powerchord = "powerchord.cli:main"
 requires = ["uv_build>=0.9.3,<0.10.0"]
 build-backend = "uv_build"
 
-#[tool.hatch.build.targets.sdist]
-#include = [
-#    "src/powerchord",
-#    "tests",
-#]
-#
-#[tool.hatch.build.targets.wheel]
-#include = ["src/powerchord"]
-#
-#[tool.hatch.build.targets.wheel.sources]
-#"src/powerchord" = "powerchord"
-#
 [tool.powerchord]
 tasks = ["ruff check .", "pytest", "mypy"]
 
@@ -75,7 +64,16 @@ testpaths = [
   "src/powerchord",
   "tests/test_powerchord",
 ]
+
+[tool.ruff.format]
+docstring-code-format = true
+skip-magic-trailing-comma = true
+
 [tool.ruff.lint]
+# Allow fix for all enabled rules (when `--fix`) is provided.
+fixable = ["ALL"]
+unfixable = []
+
 # Enable Pyflakes (`F`) and a subset of the pycodestyle (`E`)  codes by default.
 # Unlike Flake8, Ruff doesn't enable pycodestyle warnings (`W`) or
 # McCabe complexity (`C901`) by default.
