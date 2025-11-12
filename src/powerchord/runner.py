@@ -1,7 +1,7 @@
 import logging
 from dataclasses import dataclass
 
-from based_utils.utils.cli import human_readable_duration, timed_awaitable
+from based_utils.cli import human_readable_duration, timed_awaitable
 
 from .formatting import FAIL, OK, bright, dim
 from .logging import ASYNC_LOG, task_log
