@@ -1,6 +1,6 @@
 [project]
 name = "powerchord"
-version = "0.2.9"
+version = "0.2.10"
 description = "Concurrent CLI task runner"
 authors = [{ name = "Huib Piguillet", email = "huib@proton.me" }]
 requires-python = ">=3.12"
@@ -81,6 +81,12 @@ testpaths = [
 # McCabe complexity (`C901`) by default.
 select = ["ALL"]
 ignore = [
+#    "COM812", # may cause conflicts when used with the formatter
+#    "RUF013", # PEP 484 prohibits implicit `Optional`
+#    "G004",  # Logging statement uses f-string
+#    "TRY003", # Avoid specifying long messages outside the exception class
+#    "EM101", "EM102", # Exception must not use a string literal, assign to variable first
+
   # pydocstyle (D)
   "D100", # https://docs.astral.sh/ruff/rules/undocumented-public-module/	Missing docstring in public module
   "D101", # https://docs.astral.sh/ruff/rules/undocumented-public-class/	Missing docstring in public class
