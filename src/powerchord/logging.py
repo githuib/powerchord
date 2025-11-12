@@ -1,19 +1,28 @@
 import logging
 import sys
-from collections.abc import Iterator
+from collections.abc import Callable, Iterator
 from contextlib import contextmanager
 from dataclasses import asdict, dataclass
 from enum import IntEnum
+from functools import partial
 from logging.handlers import QueueHandler, QueueListener
 from multiprocessing import Queue
+from typing import Literal
 
 from gaffe import raises
 
 ASYNC_LOG = logging.getLogger("powerchord.all")
 
+Category = Literal["success", "fail"]
 
-def task_log(success: bool) -> logging.Logger:
-    return logging.getLogger("powerchord." + ("success" if success else "fail"))
+
+def task_log(category: Category, log_level: int) -> Callable[[str], None]:
+    return partial(logging.getLogger(f"powerchord.{category}").log, log_level)
+
+
+class InvalidLogLevelError(ValueError):
+    def __init__(self, log_level: str) -> None:
+        super().__init__(f"Invalid log level: {log_level}")
 
 
 class LogLevel(IntEnum):
@@ -32,7 +41,7 @@ class LogLevel(IntEnum):
         try:
             return cls[value.upper()]
         except (AttributeError, KeyError) as exc:
-            raise ValueError("Invalid log level:", value) from exc
+            raise InvalidLogLevelError(value) from exc
 
 
 @dataclass

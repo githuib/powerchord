@@ -1,7 +1,7 @@
 import logging
 from dataclasses import dataclass
 
-from .formatting import FAIL, bright, dim, status
+from .formatting import FAIL, OK, bright, dim
 from .logging import ASYNC_LOG, task_log
 from .utils import concurrent_call, exec_command, timed_awaitable
 
@@ -46,12 +46,12 @@ class TaskRunner:
             log.info(line)
 
     async def _run_task(self, task: Task) -> tuple[str, bool]:
-        (success, output_streams), duration = await timed_awaitable(
-            exec_command(task.command)
-        )
-        log_level = logging.INFO if success else logging.ERROR
-        log.log(log_level, self._task_line(status(success), task, duration))
-        for stream in output_streams:
-            if stream:
-                task_log(success).log(log_level, stream.decode())
-        return task.id, success
+        (ok, (out, err)), duration = await timed_awaitable(exec_command(task.command))
+        log_level = logging.INFO if ok else logging.ERROR
+        log.log(log_level, self._task_line(OK if ok else FAIL, task, duration))
+        tl = task_log("success" if ok else "fail", log_level)
+        if out:
+            tl(out.decode())
+        if err:
+            tl(err.decode())
+        return task.id, ok
