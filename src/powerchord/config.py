@@ -3,13 +3,15 @@ import tomllib
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import ClassVar
+from typing import TYPE_CHECKING, ClassVar
 
 from chili import decode
 from gaffe import raises
 
 from .logging import LogLevel, LogLevels
-from .runner import Task
+
+if TYPE_CHECKING:
+    from .runner import Task
 
 
 class ParseConfigError(Exception):

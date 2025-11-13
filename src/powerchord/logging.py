@@ -1,15 +1,17 @@
 import logging
 import sys
-from collections.abc import Callable, Iterator
 from contextlib import contextmanager
 from dataclasses import asdict, dataclass
 from enum import IntEnum
 from functools import partial
 from logging.handlers import QueueHandler, QueueListener
 from multiprocessing import Queue
-from typing import Literal
+from typing import TYPE_CHECKING, Literal
 
 from gaffe import raises
+
+if TYPE_CHECKING:
+    from collections.abc import Callable, Iterator
 
 ASYNC_LOG = logging.getLogger("powerchord.all")
 
@@ -35,7 +37,7 @@ class LogLevel(IntEnum):
 
     @classmethod
     @raises(ValueError)
-    def decode(cls, value: str) -> "LogLevel":
+    def decode(cls, value: str) -> LogLevel:
         if not value:
             return cls.NEVER
         try:

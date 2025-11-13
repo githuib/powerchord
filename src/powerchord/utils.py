@@ -1,8 +1,10 @@
 import asyncio
-from collections.abc import AsyncIterator, Callable, Coroutine, Iterable
 from functools import wraps
 from subprocess import PIPE
-from typing import Any
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    from collections.abc import AsyncIterator, Callable, Coroutine, Iterable
 
 
 class FatalError(SystemExit):

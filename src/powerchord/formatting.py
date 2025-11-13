@@ -1,7 +1,10 @@
 import os
 import sys
-from collections.abc import Callable
 from functools import cache
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 
 @cache
