@@ -1,7 +1,10 @@
 import os
 import sys
-from collections.abc import Callable
 from functools import cache
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 
 @cache
@@ -42,17 +45,3 @@ white = _wrap_ansi_code(97)
 
 OK = green("✔")
 FAIL = red("✘")
-
-
-def status(success: bool) -> str:
-    return OK if success else FAIL
-
-
-# def status(success: bool) -> Callable[[str], str]:
-#     def wrapper(s: str) -> str:
-#         return f'{OK if success else FAIL} {s}'
-#     return wrapper
-#
-#
-# ok = status(True)
-# fail = status(False)

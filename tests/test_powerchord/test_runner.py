@@ -1,6 +1,6 @@
-async def test_run_task():
+async def test_run_task() -> None:
     assert True
 
 
-async def test_run_commands():
+async def test_run_commands() -> None:
     assert True

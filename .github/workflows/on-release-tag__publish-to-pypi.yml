@@ -6,8 +6,8 @@ on:
 
 jobs:
   build:
-    name: Build Poetry project into distributable package
-    uses: githuib/base/.github/workflows/py__build-poetry-project.yml@master
+    name: Build project into distributable package
+    uses: githuib/based-utils/.github/workflows/py__build-uv-project.yml@master
 
   publish:
     name: Publish package to PyPI

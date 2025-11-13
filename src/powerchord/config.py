@@ -18,7 +18,7 @@ class ParseConfigError(Exception):
 
 @dataclass
 class Config:
-    tasks: list[Task] = field(default_factory=list)
+    tasks: list[Task] = field(default_factory=list[Task])
     log_levels: LogLevels = field(default_factory=LogLevels)
 
 
@@ -30,7 +30,7 @@ class DecodeConfigError(Exception):
 class ConfigLoader(ABC):
     name: ClassVar[str]
 
-    tasks: list[Task] = field(default_factory=list)
+    tasks: list[Task] = field(default_factory=list[Task])
     log_levels: LogLevels = field(default_factory=LogLevels)
 
     @classmethod
@@ -52,7 +52,8 @@ class ConfigLoader(ABC):
         elif isinstance(tasks, dict):
             task_items = list(tasks.items())
         else:
-            raise DecodeConfigError(f"Wrong value for tasks: {tasks}")
+            msg = f"Wrong value for tasks: {tasks}"
+            raise DecodeConfigError(msg)
         config_dict["tasks"] = [{"command": t, "name": n} for n, t in task_items]
 
         log_levels = config_dict.get("log_levels", {})
@@ -124,12 +125,12 @@ class PyprojectConfig(ConfigLoader):
 
 
 class LoadConfigError(Exception):
-    def __init__(self, name: str = "", *args):
+    def __init__(self, name: str = "", *args: object) -> None:
         super().__init__(f"Could not load config{name}{':' if args else ''}", *args)
 
 
 class LoadSpecificConfigError(LoadConfigError):
-    def __init__(self, name: str, *args):
+    def __init__(self, name: str, *args: object) -> None:
         super().__init__(f" from {name}", *args)
 
 

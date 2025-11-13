@@ -1,11 +1,13 @@
 import logging
 from dataclasses import dataclass
 
-from .formatting import FAIL, bright, dim, status
-from .logging import ASYNC_LOG, task_log
-from .utils import concurrent_call, exec_command, timed_awaitable
+from based_utils.cli import human_readable_duration, timed_awaitable
 
-log = ASYNC_LOG
+from .formatting import FAIL, OK, bright, dim
+from .logging import get_logger
+from .utils import concurrent_call, exec_command
+
+_main_logger = get_logger("all")
 
 
 @dataclass
@@ -26,15 +28,15 @@ class TaskRunner:
 
     async def run_tasks(self) -> bool:
         if not self.tasks:
-            log.warning("Nothing to do. Getting bored...\n")
+            _main_logger.warning("Nothing to do. Getting bored...\n")
             return True
         if self.has_named_tasks:
             await self._show_todo()
         results = await concurrent_call(self._run_task, self.tasks)
         failed_tasks = [task for task, ok in results if not ok]
         if failed_tasks:
-            log.error("")
-            log.error(f"{FAIL} {bright('Failed tasks:')} {failed_tasks}")
+            _main_logger.error("")
+            _main_logger.error(f"{FAIL} {bright('Failed tasks:')} {failed_tasks}")
         return not failed_tasks
 
     def _task_line(self, bullet: str, task: Task, data: str) -> str:
@@ -43,15 +45,21 @@ class TaskRunner:
     async def _show_todo(self) -> None:
         summary = [self._task_line("•", task, task.command) for task in self.tasks]
         for line in (bright("To do:"), *summary, "", bright("Results:")):
-            log.info(line)
+            _main_logger.info(line)
 
     async def _run_task(self, task: Task) -> tuple[str, bool]:
-        (success, output_streams), duration = await timed_awaitable(
-            exec_command(task.command)
+        (ok, (out, err)), duration = await timed_awaitable(exec_command(task.command))
+
+        log_level = logging.INFO if ok else logging.ERROR
+
+        task_line = self._task_line(
+            OK if ok else FAIL, task, human_readable_duration(duration)
         )
-        log_level = logging.INFO if success else logging.ERROR
-        log.log(log_level, self._task_line(status(success), task, duration))
-        for stream in output_streams:
-            if stream:
-                task_log(success).log(log_level, stream.decode())
-        return task.id, success
+        _main_logger.log(log_level, task_line)
+
+        task_logger = get_logger("success" if ok else "fail")
+        if out:
+            task_logger.log(log_level, out.decode())
+        if err:
+            task_logger.log(log_level, err.decode())
+        return task.id, ok

@@ -1,18 +1,16 @@
-[build-system]
-requires = ["poetry-core>=2.0.0,<3.0.0"]
-build-backend = "poetry.core.masonry.api"
-
 [project]
 name = "powerchord"
-version = "0.2.9"
+version = "0.2.13"
 description = "Concurrent CLI task runner"
-requires-python = ">=3.12"
-authors = [
-    { name = "Huib Piguillet", email = "huib@proton.me" },
-]
-license = "MIT"
+authors = [{ name = "Huib Piguillet", email = "huib@proton.me" }]
+requires-python = ">=3.14"
 readme = "README.md"
-keywords = ["task runner", "cli utility", "concurrency"]
+license = "MIT"
+keywords = [
+    "task runner",
+    "cli utility",
+    "concurrency",
+]
 classifiers = [
     "Intended Audience :: Developers",
     "Topic :: Utilities",
@@ -23,11 +21,19 @@ classifiers = [
     "Programming Language :: Python :: 3.14",
     "Programming Language :: Python :: 3 :: Only",
 ]
-
-dependencies = ["chili", "gaffe"]
+dependencies = [
+    "based-utils",
+    "chili",
+    "gaffe",
+]
 
 [dependency-groups]
-qa = ["mypy", "pytest", "pytest-asyncio", "ruff"]
+dev = [
+    "mypy",
+    "pytest",
+    "pytest-asyncio",
+    "ruff",
+]
 
 [project.urls]
 PyPI = "https://pypi.org/project/powerchord/"
@@ -36,26 +42,12 @@ Github = "https://github.com/githuib/powerchord"
 [project.scripts]
 powerchord = "powerchord.cli:main"
 
-[tool.poetry]
-requires-poetry = ">=2.0"
-packages = [{ include = "powerchord", from = "src" }]
-include = [{ path = "tests", format = "sdist" }]
-
-[tool.poetry.dependencies]
-python = ">=3.12,<4.0"
+[build-system]
+requires = ["uv_build>=0.9.3,<0.10.0"]
+build-backend = "uv_build"
 
 [tool.powerchord]
 tasks = ["ruff check .", "pytest", "mypy"]
-
-#[tool.powerchord.tasks]
-#linting = "poetry run ruff check ."
-#tests = "poetry run pytest"
-#type-checking = "poetry run mypy"
-
-#[tool.powerchord.log_levels]
-#all = "indfo"
-#success = "info"
-#fail = "error"
 
 [tool.mypy]
 files = ["src", "tests"]
@@ -68,82 +60,54 @@ plugins = "gaffe.mypy:plugin"
 [tool.pytest.ini_options]
 addopts = "-ra -q --doctest-modules"
 asyncio_mode = "auto"
+testpaths = [
+  "src/powerchord",
+  "tests/test_powerchord",
+]
 
-[tool.ruff]
-indent-width = 4
-target-version = "py312"
+[tool.ruff.format]
+docstring-code-format = true
+skip-magic-trailing-comma = true
 
 [tool.ruff.lint]
+# Allow fix for all enabled rules (when `--fix`) is provided.
+fixable = ["ALL"]
+unfixable = []
+
 # Enable Pyflakes (`F`) and a subset of the pycodestyle (`E`)  codes by default.
 # Unlike Flake8, Ruff doesn't enable pycodestyle warnings (`W`) or
 # McCabe complexity (`C901`) by default.
-select = [
-    "F", # Pyflakes
-    "E", # pycodestyle
-    "E", # pycodestyle
-    "C90", # mccabe
-    "I", # isort
-    "N", # pep8-naming
-#    "D", # pydocstyle
-    "UP", # pyupgrade
-    "YTT", # flake8-2020
-#    "ANN", # flake8-annotations
-    "ASYNC", # flake8-async
-#    "TRIO", # flake8-trio
-    "S", # flake8-bandit
-    "BLE", # flake8-blind-except
-#    "FBT", # flake8-boolean-trap
-    "B", # flake8-bugbear
-    "A", # flake8-builtins
-    "COM", # flake8-commas
-#    "CPY", # flake8-copyright
-    "C4", # flake8-comprehensions
-    "DTZ", # flake8-datetimez
-    "T10", # flake8-debugger
-    "DJ", # flake8-django
-    "EM", # flake8-errmsg
-    "EXE", # flake8-executable
-    "FA", # flake8-future-annotations
-    "ISC", # flake8-implicit-str-concat
-    "ICN", # flake8-import-conventions
-    "G", # flake8-logging-format
-    "INP", # flake8-no-pep420
-    "PIE", # flake8-pie
-    "T20", # flake8-print
-    "PYI", # flake8-pyi
-    "PT", # flake8-pytest-style
-    "Q", # flake8-quotes
-    "RSE", # flake8-raise
-    "RET", # flake8-return
-    "SLF", # flake8-self
-    "SLOT", # flake8-slots
-    "SIM", # flake8-simplify
-    "TID", # flake8-tidy-imports
-    "TCH", # flake8-type-checking
-    "INT", # flake8-gettext
-    "ARG", # flake8-unused-arguments
-    "PTH", # flake8-use-pathlib
-#    "TD", # flake8-todos
-#    "FIX", # flake8-fixme
-#    "ERA", # eradicate
-    "PD", # pandas-vet
-    "PGH", # pygrep-hooks
-    "PL", # Pylint
-    "TRY", # tryceratops
-    "FLY", # flynt
-    "NPY", # NumPy-specific rules
-    "AIR", # Airflow
-    "PERF", # Perflint
-#    "FURB", # refurb
-    "LOG", # flake8-logging
-    "RUF", # Ruff-specific rules
-]
+select = ["ALL"]
 ignore = [
-    "COM812", # may cause conflicts when used with the formatter
-    "RUF013", # PEP 484 prohibits implicit `Optional`
-    "G004",  # Logging statement uses f-string
-    "TRY003", # Avoid specifying long messages outside the exception class
-    "EM101", "EM102", # Exception must not use a string literal, assign to variable first
+#    "COM812", # may cause conflicts when used with the formatter
+#    "RUF013", # PEP 484 prohibits implicit `Optional`
+#    "G004",  # Logging statement uses f-string
+#    "TRY003", # Avoid specifying long messages outside the exception class
+#    "EM101", "EM102", # Exception must not use a string literal, assign to variable first
+
+  # pydocstyle (D)
+  "D100", # https://docs.astral.sh/ruff/rules/undocumented-public-module/	Missing docstring in public module
+  "D101", # https://docs.astral.sh/ruff/rules/undocumented-public-class/	Missing docstring in public class
+  "D102", # https://docs.astral.sh/ruff/rules/undocumented-public-method/	Missing docstring in public method
+  "D103", # https://docs.astral.sh/ruff/rules/undocumented-public-function/	Missing docstring in public function
+  "D104", # https://docs.astral.sh/ruff/rules/undocumented-public-package/	Missing docstring in public package
+  "D105", # https://docs.astral.sh/ruff/rules/undocumented-magic-method/	Missing docstring in magic method
+  "D106", # https://docs.astral.sh/ruff/rules/undocumented-public-nested-class/	Missing docstring in public nested class
+  "D107", # https://docs.astral.sh/ruff/rules/undocumented-public-init/	Missing docstring in __init__
+  # warning: The following rule may cause conflicts when used with the formatter: `D203`. To avoid unexpected behavior, we recommend disabling this rule
+  "D203", # https://docs.astral.sh/ruff/rules/incorrect-blank-line-before-class/	1 blank line required before class docstring
+  "D211", # https://docs.astral.sh/ruff/rules/blank-line-before-class/	No blank lines allowed before class docstring
+  "D212", # https://docs.astral.sh/ruff/rules/multi-line-summary-first-line/	Multi-line docstring summary should start at the first line
+
+  # flake8-commas (COM)
+  # warning: The following rule may cause conflicts when used with the formatter: `COM812`
+  "COM812", # https://docs.astral.sh/ruff/rules/missing-trailing-comma/	Trailing comma missing
+
+  # flake8-logging-format (G)
+  "G004", # https://docs.astral.sh/ruff/rules/logging-f-string/	Logging statement uses f-string
+
+  # Ruff-specific rules (RUF)
+  "RUF013", # https://docs.astral.sh/ruff/rules/implicit-optional/	PEP 484 prohibits implicit Optional
 ]
 
 [tool.ruff.lint.per-file-ignores]
@@ -151,3 +115,6 @@ ignore = [
 #    "ANN", # flake8-annotations
     "S", # flake8-bandit
 ]
+
+[tool.ruff.lint.isort]
+split-on-trailing-comma = false
