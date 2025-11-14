@@ -2,9 +2,9 @@ import logging
 from dataclasses import dataclass
 
 from based_utils.cli import human_readable_duration, timed_awaitable
+from based_utils.cli.formats import FAIL, OK, bright, dim
 
 from . import log
-from .formatting import FAIL, OK, bright, dim
 from .utils import concurrent_call, exec_command
 
 _main_logger = log.get_logger()
