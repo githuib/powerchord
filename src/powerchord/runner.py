@@ -3,11 +3,11 @@ from dataclasses import dataclass
 
 from based_utils.cli import human_readable_duration, timed_awaitable
 
+from . import log
 from .formatting import FAIL, OK, bright, dim
-from .logging import get_logger
 from .utils import concurrent_call, exec_command
 
-_main_logger = get_logger("all")
+_main_logger = log.get_logger()
 
 
 @dataclass
@@ -57,7 +57,7 @@ class TaskRunner:
         )
         _main_logger.log(log_level, task_line)
 
-        task_logger = get_logger("success" if ok else "fail")
+        task_logger = log.get_logger("success" if ok else "fail")
         if out:
             task_logger.log(log_level, out.decode())
         if err:

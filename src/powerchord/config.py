@@ -5,15 +5,22 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import ClassVar
 
+from based_utils.cli import LogLevel
 from chili import decode
 from gaffe import raises
 
-from .logging import LogLevel, LogLevels
 from .runner import Task
 
 
 class ParseConfigError(Exception):
     pass
+
+
+@dataclass
+class LogLevels:
+    all: LogLevel = LogLevel.INFO
+    success: LogLevel = LogLevel.NEVER
+    fail: LogLevel = LogLevel.ERROR
 
 
 @dataclass
