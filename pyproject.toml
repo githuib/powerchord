@@ -7,32 +7,32 @@ requires-python = ">=3.14"
 readme = "README.md"
 license = "MIT"
 keywords = [
-    "task runner",
-    "cli utility",
-    "concurrency",
+  "task runner",
+  "cli utility",
+  "concurrency",
 ]
 classifiers = [
-    "Intended Audience :: Developers",
-    "Topic :: Utilities",
-    "Topic :: Software Development :: Build Tools",
-    "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.12",
-    "Programming Language :: Python :: 3.13",
-    "Programming Language :: Python :: 3.14",
-    "Programming Language :: Python :: 3 :: Only",
+  "Intended Audience :: Developers",
+  "Topic :: Utilities",
+  "Topic :: Software Development :: Build Tools",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+  "Programming Language :: Python :: 3 :: Only",
 ]
 dependencies = [
-    "based-utils",
-    "chili",
-    "gaffe",
+  "based-utils",
+  "chili",
+  "gaffe",
 ]
 
 [dependency-groups]
 dev = [
-    "mypy",
-    "pytest",
-    "pytest-asyncio",
-    "ruff",
+  "mypy",
+  "pytest",
+  "pytest-asyncio",
+  "ruff",
 ]
 
 [project.urls]
@@ -79,11 +79,11 @@ unfixable = []
 # McCabe complexity (`C901`) by default.
 select = ["ALL"]
 ignore = [
-#    "COM812", # may cause conflicts when used with the formatter
-#    "RUF013", # PEP 484 prohibits implicit `Optional`
-#    "G004",  # Logging statement uses f-string
-#    "TRY003", # Avoid specifying long messages outside the exception class
-#    "EM101", "EM102", # Exception must not use a string literal, assign to variable first
+#  "COM812", # may cause conflicts when used with the formatter
+#  "RUF013", # PEP 484 prohibits implicit `Optional`
+#  "G004",  # Logging statement uses f-string
+#  "TRY003", # Avoid specifying long messages outside the exception class
+#  "EM101", "EM102", # Exception must not use a string literal, assign to variable first
 
   # pydocstyle (D)
   "D100", # https://docs.astral.sh/ruff/rules/undocumented-public-module/	Missing docstring in public module
@@ -112,8 +112,8 @@ ignore = [
 
 [tool.ruff.lint.per-file-ignores]
 "tests/**/*" = [
-#    "ANN", # flake8-annotations
-    "S", # flake8-bandit
+#  "ANN", # flake8-annotations
+  "S", # flake8-bandit
 ]
 
 [tool.ruff.lint.isort]
