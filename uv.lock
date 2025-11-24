@@ -4,7 +4,7 @@ requires-python = ">=3.14"
 
 [[package]]
 name = "based-utils"
-version = "0.8.7"
+version = "0.8.13"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "gaffe" },
@@ -12,9 +12,8 @@ dependencies = [
     { name = "more-itertools" },
     { name = "yachalk" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/e0/52/5cac471ecc91c6306c607d1ccdac0114f08f64b6450c95af8062b14f67ef/based_utils-0.8.7.tar.gz", hash = "sha256:35a81d7dc38d3b0da4ad3249a2100b3f21c9f03c2dd608ffc5e24e1218f37976", size = 17879, upload-time = "2025-11-24T01:24:03.95Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/a9/e1/eaf7d3ded4d786c8471d6aeb99761927ed2fbeee60ab1c24e7ccb2e768dd/based_utils-0.8.7-py3-none-any.whl", hash = "sha256:3021b6a301f8548acb87a8a17c854e8c196f6e46e79d6c848611cfd0a0ff5155", size = 24246, upload-time = "2025-11-24T01:24:02.633Z" },
+    { url = "https://files.pythonhosted.org/packages/0f/02/c29dea5b398f821b6ba868b56fc8a5cf0381ea89d43aab97c614bd72719f/based_utils-0.8.13-py3-none-any.whl", hash = "sha256:97524b1a22c89f8ef84fd240c41b8301587adc51e3edce28c1cec6fb147d5002", size = 24389, upload-time = "2025-11-24T21:00:14.681Z" },
 ]
 
 [[package]]

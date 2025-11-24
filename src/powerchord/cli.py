@@ -2,15 +2,14 @@ import asyncio
 import sys
 from dataclasses import asdict
 
-from based_utils.cli import LogLevel, catch_unknown_errors, killed_by
+from based_utils.cli import LogLevel, killed_by_errors
 
 from . import log
 from .config import CLIConfig, LoadConfigError, PyprojectConfig, load_config
 from .runner import TaskRunner
 
 
-@catch_unknown_errors()
-@killed_by(LoadConfigError)
+@killed_by_errors(LoadConfigError, unknown_message="Something went wrong.")
 def main() -> None:
     config = load_config(CLIConfig, PyprojectConfig)
     log_levels = asdict(config.log_levels)
