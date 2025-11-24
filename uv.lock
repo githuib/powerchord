@@ -12,6 +12,7 @@ dependencies = [
     { name = "more-itertools" },
     { name = "yachalk" },
 ]
+sdist = { url = "https://files.pythonhosted.org/packages/1e/25/b7dded094f2df540de9bb5c93f1242d1eef882e3777e0d8003f99bceef22/based_utils-0.8.13.tar.gz", hash = "sha256:67faee146fe8d4df362474ae936b90402be061496bae5c7d8cffca97d3382e68", size = 18009, upload-time = "2025-11-24T21:00:15.971Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/0f/02/c29dea5b398f821b6ba868b56fc8a5cf0381ea89d43aab97c614bd72719f/based_utils-0.8.13-py3-none-any.whl", hash = "sha256:97524b1a22c89f8ef84fd240c41b8301587adc51e3edce28c1cec6fb147d5002", size = 24389, upload-time = "2025-11-24T21:00:14.681Z" },
 ]
@@ -141,7 +142,7 @@ wheels = [
 
 [[package]]
 name = "powerchord"
-version = "0.3.2"
+version = "0.3.3"
 source = { editable = "." }
 dependencies = [
     { name = "based-utils" },
