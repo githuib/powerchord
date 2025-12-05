@@ -9,7 +9,7 @@ from based_utils.cli import LogLevel
 from chili import decode
 from gaffe import raises
 
-from .runner import Task
+from .runner import Task  # noqa: TC001
 
 
 class ParseConfigError(Exception):
@@ -19,13 +19,14 @@ class ParseConfigError(Exception):
 @dataclass
 class LogLevels:
     all: LogLevel = LogLevel.INFO
-    success: LogLevel = LogLevel.NEVER
-    fail: LogLevel = LogLevel.ERROR
+    tasks: LogLevel = LogLevel.NEVER
+    successful_tasks: LogLevel | None = None
+    failed_tasks: LogLevel | None = None
 
 
 @dataclass
 class Config:
-    tasks: list[Task] = field(default_factory=list[Task])
+    tasks: list[Task] = field(default_factory=list)
     log_levels: LogLevels = field(default_factory=LogLevels)
 
 
@@ -36,9 +37,6 @@ class DecodeConfigError(Exception):
 @dataclass
 class ConfigLoader(ABC):
     name: ClassVar[str]
-
-    tasks: list[Task] = field(default_factory=list[Task])
-    log_levels: LogLevels = field(default_factory=LogLevels)
 
     @classmethod
     @raises(ParseConfigError)
@@ -148,6 +146,8 @@ def load_config(*loaders: type[ConfigLoader]) -> Config:
             config = loader_cls.load()
         except (ParseConfigError, DecodeConfigError) as exc:
             raise LoadSpecificConfigError(loader_cls.name, *exc.args) from exc
-        if config:
-            return config
-    raise LoadConfigError
+        else:
+            if config:
+                return config
+    return Config()
+    # raise LoadConfigError

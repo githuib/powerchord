@@ -35,8 +35,9 @@ class TaskRunner:
         results = await concurrent_call(self._run_task, self.tasks)
         failed_tasks = [task for task, ok in results if not ok]
         if failed_tasks:
+            failed_tasks_str = " ".join(f"{FAIL} {t}" for t in failed_tasks)
             _main_logger.error("")
-            _main_logger.error(f"{FAIL} {bright('Failed tasks:')} {failed_tasks}")
+            _main_logger.error(f"💀 {bright('Failed tasks:')} {failed_tasks_str}")
         return not failed_tasks
 
     def _task_line(self, bullet: str, task: Task, data: str) -> str:
@@ -48,18 +49,20 @@ class TaskRunner:
             _main_logger.info(line)
 
     async def _run_task(self, task: Task) -> tuple[str, bool]:
-        (ok, (out, err)), duration = await timed_awaitable(exec_command(task.command))
+        result, duration = await timed_awaitable(exec_command(task.command))
+        is_successful, (out, err) = result
 
-        log_level = logging.INFO if ok else logging.ERROR
+        log_level = logging.INFO if is_successful else logging.ERROR
 
-        task_line = self._task_line(
-            OK if ok else FAIL, task, human_readable_duration(duration)
-        )
+        bullet = OK if is_successful else FAIL
+        task_line = self._task_line(bullet, task, human_readable_duration(duration))
         _main_logger.log(log_level, task_line)
 
-        task_logger = log.get_logger("success" if ok else "fail")
+        logger_name = "successful" if is_successful else "failed"
+        task_logger = log.get_logger(f"{logger_name}_tasks")
         if out:
-            task_logger.log(log_level, out.decode())
+            task_logger.info(out.decode())
         if err:
-            task_logger.log(log_level, err.decode())
-        return task.id, ok
+            task_logger.error(err.decode())
+
+        return task.id, is_successful
