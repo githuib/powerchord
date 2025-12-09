@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import ClassVar
 
 from based_utils.cli import LogLevel
+from based_utils.cli.args import parse_key_value_pair, try_parse_key_value_pair
 from chili import decode
 from gaffe import raises
 
@@ -69,18 +70,6 @@ class ConfigLoader(ABC):
             return decode(config_dict, Config, decoders={LogLevel: LogLevel})
         except ValueError as exc:
             raise DecodeConfigError(*exc.args) from exc
-
-
-def parse_key_value_pair(value: str) -> tuple[str, str]:
-    key, value = value.split("=", 1)
-    return key, value
-
-
-def try_parse_key_value_pair(value: str) -> str | tuple[str, str]:
-    try:
-        return parse_key_value_pair(value)
-    except ValueError:
-        return value
 
 
 class CLIConfig(ConfigLoader):
