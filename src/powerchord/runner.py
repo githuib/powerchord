@@ -3,7 +3,7 @@ from dataclasses import dataclass
 
 from based_utils.asynx import concurrent_call, exec_command
 from based_utils.cli import human_readable_duration, timed_awaitable
-from based_utils.cli.formats import FAIL, OK, bright, dim
+from based_utils.cli.formats import FAIL, OK, bold, faint
 
 from . import log
 
@@ -37,15 +37,15 @@ class TaskRunner:
         if failed_tasks:
             failed_tasks_str = " ".join(f"{FAIL} {t}" for t in failed_tasks)
             _main_logger.error("")
-            _main_logger.error(f"💀 {bright('Failed tasks:')} {failed_tasks_str}")
+            _main_logger.error(f"💀 {bold('Failed tasks:')} {failed_tasks_str}")
         return not failed_tasks
 
     def _task_line(self, bullet: str, task: Task, data: str) -> str:
-        return f"{bullet} {task.id.ljust(self.max_name_length)}  {dim(data)}"
+        return f"{bullet} {task.id.ljust(self.max_name_length)}  {faint(data)}"
 
     async def _show_todo(self) -> None:
         summary = [self._task_line("•", task, task.command) for task in self.tasks]
-        for line in (bright("To do:"), *summary, "", bright("Results:")):
+        for line in (bold("To do:"), *summary, "", bold("Results:")):
             _main_logger.info(line)
 
     async def _run_task(self, task: Task) -> tuple[str, bool]:
