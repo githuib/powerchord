@@ -5,8 +5,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import ClassVar
 
-from based_utils.cli import LogLevel
-from based_utils.cli.args import parse_key_value_pair, try_parse_key_value_pair
+from based_utils.cli import LogLevel, parse_key_value_pair, try_parse_key_value_pair
 from chili import decode
 from gaffe import raises
 
