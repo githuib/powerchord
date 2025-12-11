@@ -4,30 +4,17 @@ requires-python = ">=3.14"
 
 [[package]]
 name = "based-utils"
-version = "0.10.6"
-source = { editable = "../based-utils" }
+version = "0.10.7"
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "gaffe" },
     { name = "hsluv" },
     { name = "kleur" },
     { name = "more-itertools" },
 ]
-
-[package.metadata]
-requires-dist = [
-    { name = "gaffe" },
-    { name = "hsluv" },
-    { name = "kleur" },
-    { name = "more-itertools" },
-]
-
-[package.metadata.requires-dev]
-dev = [
-    { name = "mypy" },
-    { name = "powerchord" },
-    { name = "pytest" },
-    { name = "pytest-asyncio" },
-    { name = "ruff" },
+sdist = { url = "https://files.pythonhosted.org/packages/ec/b3/7e469514c61af3a6515a329addcce9e5450014e8dab38fc5888e3717caef/based_utils-0.10.7.tar.gz", hash = "sha256:d78c7351aa878f16c79cfc3d09afd7381a96f7a6b2d621d9b23091bb6b39e67b", size = 15326, upload-time = "2025-12-11T01:45:22.45Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/87/2c/d9a3220dde9c9e12fc31154c38af3859de2c3dca6b465948fa6cafd469b8/based_utils-0.10.7-py3-none-any.whl", hash = "sha256:5891bdded42e59df405ad00caf28a52f6853a87ae360ac7443da2c1a5ed849f2", size = 20030, upload-time = "2025-12-11T01:45:21.004Z" },
 ]
 
 [[package]]
@@ -195,6 +182,7 @@ dependencies = [
     { name = "based-utils" },
     { name = "chili" },
     { name = "gaffe" },
+    { name = "kleur" },
 ]
 
 [package.dev-dependencies]
@@ -207,9 +195,10 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "based-utils", editable = "../based-utils" },
+    { name = "based-utils" },
     { name = "chili" },
     { name = "gaffe" },
+    { name = "kleur" },
 ]
 
 [package.metadata.requires-dev]

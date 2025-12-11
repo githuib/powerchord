@@ -23,6 +23,7 @@ dependencies = [
   "based-utils",
   "chili",
   "gaffe",
+  "kleur",
 ]
 
 [dependency-groups]
