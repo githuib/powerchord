@@ -5,15 +5,29 @@ requires-python = ">=3.14"
 [[package]]
 name = "based-utils"
 version = "0.10.6"
-source = { registry = "https://pypi.org/simple" }
+source = { editable = "../based-utils" }
 dependencies = [
     { name = "gaffe" },
     { name = "hsluv" },
+    { name = "kleur" },
     { name = "more-itertools" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/7d/91/78a3f91b600d6b25a6301505f1eba27e40df5fdbfe97e9a9782805010698/based_utils-0.10.6.tar.gz", hash = "sha256:ba33d0e3e0944b90728fde34e3b88401bbaca9af121660d8cb6799d6fcc62abb", size = 19804, upload-time = "2025-12-10T19:15:15.747Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/81/c7/ec4e8f9a3985c715956869e67830dfd62c2566bf7527a86b443b6c674cd0/based_utils-0.10.6-py3-none-any.whl", hash = "sha256:b53fbb0006b4ffcf8ccba2fc5645d45e8223c10f08f92faa001840a83869ec97", size = 25783, upload-time = "2025-12-10T19:15:14.243Z" },
+
+[package.metadata]
+requires-dist = [
+    { name = "gaffe" },
+    { name = "hsluv" },
+    { name = "kleur" },
+    { name = "more-itertools" },
+]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "mypy" },
+    { name = "powerchord" },
+    { name = "pytest" },
+    { name = "pytest-asyncio" },
+    { name = "ruff" },
 ]
 
 [[package]]
@@ -63,6 +77,18 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/72/34/14ca021ce8e5dfedc35312d08ba8bf51fdd999c576889fc2c24cb97f4f10/iniconfig-2.3.0.tar.gz", hash = "sha256:c76315c77db068650d49c5b56314774a7804df16fee4402c1f19d6d15d8c4730", size = 20503, upload-time = "2025-10-18T21:55:43.219Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/cb/b1/3846dd7f199d53cb17f49cba7e651e9ce294d8497c8c150530ed11865bb8/iniconfig-2.3.0-py3-none-any.whl", hash = "sha256:f631c04d2c48c52b84d0d0549c99ff3859c98df65b3101406327ecc7d53fbf12", size = 7484, upload-time = "2025-10-18T21:55:41.639Z" },
+]
+
+[[package]]
+name = "kleur"
+version = "1.2.3"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "hsluv" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/36/62/6c29254a522c27b74199219440c671e7d75e8e4c97a469c951ee32c6b8e0/kleur-1.2.3.tar.gz", hash = "sha256:78959e470fb9378e64a6bc42fe1509fab09b3b8d63cf5eadb174c9148f62b7ff", size = 12830, upload-time = "2025-12-11T01:16:09.334Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/98/4b/61154f39a09f1e4a86091fd3948d0028f0b1dc76851e9c9938b432ac7bb6/kleur-1.2.3-py3-none-any.whl", hash = "sha256:70a84753ae6b67e0457e28389cad6e26c863cbdd3ada57cc51ced4dd5e52865f", size = 14705, upload-time = "2025-12-11T01:16:07.992Z" },
 ]
 
 [[package]]
@@ -181,7 +207,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "based-utils" },
+    { name = "based-utils", editable = "../based-utils" },
     { name = "chili" },
     { name = "gaffe" },
 ]
