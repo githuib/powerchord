@@ -1,6 +1,6 @@
 [project]
 name = "powerchord"
-version = "0.4.5"
+version = "0.4.6"
 description = "Concurrent CLI task runner"
 authors = [{ name = "Huib Piguillet", email = "huib@proton.me" }]
 requires-python = ">=3.14"
@@ -38,8 +38,8 @@ dev = [
 PyPI = "https://pypi.org/project/powerchord/"
 Github = "https://github.com/githuib/powerchord"
 
-[tool.uv.sources]
-based-utils = { path = "../based-utils", editable = true }
+#[tool.uv.sources]
+#based-utils = { path = "../based-utils", editable = true }
 #kleur = { path = "../kleur", editable = true }
 
 [project.scripts]
