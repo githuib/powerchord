@@ -29,6 +29,7 @@ dependencies = [
 [dependency-groups]
 dev = [
   "mypy",
+  "pre-commit",
   "pytest",
   "pytest-asyncio",
   "ruff",
