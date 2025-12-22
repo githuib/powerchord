@@ -1,8 +1,8 @@
 import logging
 from dataclasses import dataclass
 
-from based_utils.asynx import concurrent_call, exec_command
 from based_utils.cli import human_readable_duration, timed_awaitable
+from based_utils.concurrency import concurrent_call, exec_command
 from kleur.formatting import FAIL, OK, bold, faint
 
 from . import log
