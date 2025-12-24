@@ -20,7 +20,7 @@ classifiers = [
   "Programming Language :: Python :: 3 :: Only",
 ]
 dependencies = [
-  "based-utils[styledcli]",
+  "based-utils",
   "chili",
   "gaffe",
   "kleur",

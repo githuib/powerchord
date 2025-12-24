@@ -4,16 +4,11 @@ requires-python = ">=3.14"
 
 [[package]]
 name = "based-utils"
-version = "1.0.5"
+version = "1.0.6"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/54/51/beb8b9b6b56005f6e0a2e1db258d8e88901bb53acd524462c6db4308a12f/based_utils-1.0.5.tar.gz", hash = "sha256:e4b23c6483c1c4557b0aa7208f1d80071ff57aef0337afc7ca09c9b448b1ce94", size = 15603, upload-time = "2025-12-23T18:32:28.687Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/aa/53/021d45a890f61fd47cd00ae2a46ef9e1a065e82c0b78255973a8ea7a51cc/based_utils-1.0.6.tar.gz", hash = "sha256:2baac0fa851a2a5fef4e8813d37d45ae328a91b86bddac52fae4e2712b68bbc0", size = 15553, upload-time = "2025-12-24T05:13:02.363Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/c9/10/425c1cf1a81774500904607c374949b3d469331b3d33136f7d067305ced0/based_utils-1.0.5-py3-none-any.whl", hash = "sha256:5925fc72586b0797bb73c95c93841555d9b0988800032abf0a278728f9e0ffb3", size = 20636, upload-time = "2025-12-23T18:32:27.367Z" },
-]
-
-[package.optional-dependencies]
-styledcli = [
-    { name = "wcwidth" },
+    { url = "https://files.pythonhosted.org/packages/fb/d4/1e512de2e377221d96ca5700b9ddf65655edd08df9fe1b59c4b33fca4fe3/based_utils-1.0.6-py3-none-any.whl", hash = "sha256:fd1ad7d691c4f2bccdf833a32bfdbe66812488eeb0c13f05b6ef2e62f53911ca", size = 19983, upload-time = "2025-12-24T05:13:00.994Z" },
 ]
 
 [[package]]
@@ -103,15 +98,15 @@ wheels = [
 
 [[package]]
 name = "kleur"
-version = "2.0.4"
+version = "2.0.6"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "based-utils" },
     { name = "hsluv" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/a4/af/f8f9c100d1787cf8f309eb660f062328312beb983b4d9cb15c3f5d27b2cb/kleur-2.0.4.tar.gz", hash = "sha256:f2fe8d29c459310d406ba42ff4bc2dc9bd0030e7c388b3b8c41275d5649eb919", size = 11527, upload-time = "2025-12-23T18:11:37.955Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/75/77/429d964d3db4bfe98acb5fffaa6337537468057bb3fe73d8b8f1497b4a99/kleur-2.0.6.tar.gz", hash = "sha256:b3497c02099eaeb8bee2c484c55d45c7ad86cf22b019dcc6fb956e504d1af08a", size = 11460, upload-time = "2025-12-23T18:43:09.568Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/35/c5/1b57f35ec0fc09e151beacaef308f709471c7c483e0b6cb917de46942689/kleur-2.0.4-py3-none-any.whl", hash = "sha256:877b799cd1b12d9db81dc3b81743e8c755d4c64a091cc65cf632fb287487d6bb", size = 13641, upload-time = "2025-12-23T18:11:35.883Z" },
+    { url = "https://files.pythonhosted.org/packages/f4/b3/0ee4c2035a97260d35f75c1d0804b32a15b60a8713be006627fab9ea7021/kleur-2.0.6-py3-none-any.whl", hash = "sha256:0a1a629dcd071d7d8424b89e7101a170242c5a026718df41ded73caa021afc8d", size = 13600, upload-time = "2025-12-23T18:43:07.97Z" },
 ]
 
 [[package]]
@@ -224,7 +219,7 @@ name = "powerchord"
 version = "0.4.10"
 source = { editable = "." }
 dependencies = [
-    { name = "based-utils", extra = ["styledcli"] },
+    { name = "based-utils" },
     { name = "chili" },
     { name = "gaffe" },
     { name = "kleur" },
@@ -241,7 +236,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "based-utils", extras = ["styledcli"] },
+    { name = "based-utils" },
     { name = "chili" },
     { name = "gaffe" },
     { name = "kleur" },
@@ -382,13 +377,4 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/20/28/e6f1a6f655d620846bd9df527390ecc26b3805a0c5989048c210e22c5ca9/virtualenv-20.35.4.tar.gz", hash = "sha256:643d3914d73d3eeb0c552cbb12d7e82adf0e504dbf86a3182f8771a153a1971c", size = 6028799, upload-time = "2025-10-29T06:57:40.511Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/79/0c/c05523fa3181fdf0c9c52a6ba91a23fbf3246cc095f26f6516f9c60e6771/virtualenv-20.35.4-py3-none-any.whl", hash = "sha256:c21c9cede36c9753eeade68ba7d523529f228a403463376cf821eaae2b650f1b", size = 6005095, upload-time = "2025-10-29T06:57:37.598Z" },
-]
-
-[[package]]
-name = "wcwidth"
-version = "0.2.14"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/24/30/6b0809f4510673dc723187aeaf24c7f5459922d01e2f794277a3dfb90345/wcwidth-0.2.14.tar.gz", hash = "sha256:4d478375d31bc5395a3c55c40ccdf3354688364cd61c4f6adacaa9215d0b3605", size = 102293, upload-time = "2025-09-22T16:29:53.023Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/af/b5/123f13c975e9f27ab9c0770f514345bd406d0e8d3b7a0723af9d43f710af/wcwidth-0.2.14-py2.py3-none-any.whl", hash = "sha256:a7bb560c8aee30f9957e5f9895805edd20602f2d7f720186dfd906e82b4982e1", size = 37286, upload-time = "2025-09-22T16:29:51.641Z" },
 ]
