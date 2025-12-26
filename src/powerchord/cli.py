@@ -11,11 +11,11 @@ from .runner import TaskRunner
 @killed_by_errors(LoadConfigError, unknown_message="Something went wrong.")
 def main() -> None:
     config = load_config(CLIConfig, PyprojectConfig)
-    log_levels = config.log_levels
-    with log.context(
-        log_levels.all,
-        successful_tasks=log_levels.successful_tasks or log_levels.tasks,
-        failed_tasks=log_levels.failed_tasks or log_levels.tasks,
-    ):
-        ran_without_errors = asyncio.run(TaskRunner(config.tasks).run_tasks())
-    sys.exit(not ran_without_errors)
+    levels = config.log_levels
+    lvl_main, lvl_tasks = levels.all, levels.tasks
+    lvl_tasks_s = min(levels.successful_tasks, lvl_tasks)
+    lvl_tasks_f = min(levels.failed_tasks, lvl_tasks)
+    runner = TaskRunner(config.tasks)
+    with log.context(lvl_main, successful_tasks=lvl_tasks_s, failed_tasks=lvl_tasks_f):
+        asyncio.run(runner.run_tasks())
+    sys.exit(runner.failed_summary)

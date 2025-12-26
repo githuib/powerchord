@@ -20,8 +20,8 @@ class ParseConfigError(Exception):
 class LogLevels:
     all: LogLevel = LogLevel.INFO
     tasks: LogLevel = LogLevel.NEVER
-    successful_tasks: LogLevel | None = None
-    failed_tasks: LogLevel | None = None
+    successful_tasks: LogLevel = LogLevel.NEVER
+    failed_tasks: LogLevel = LogLevel.ERROR
 
 
 @dataclass

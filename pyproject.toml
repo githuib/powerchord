@@ -37,6 +37,7 @@ dev = [
 
 #[tool.uv.sources]
 #based-utils = { path = "../based-utils", editable = true }
+#kleur = { path = "../kleur", editable = true }
 
 [project.urls]
 PyPI = "https://pypi.org/project/powerchord/"

@@ -25,20 +25,24 @@ class TaskRunner:
         self.tasks = tasks
         self.has_named_tasks = any(t.name for t in tasks)
         self.max_name_length = max(len(t.id) for t in tasks or [Task("")])
+        self._results: list[tuple[str, bool]] = []
 
-    async def run_tasks(self) -> bool:
+    async def run_tasks(self) -> None:
         if not self.tasks:
             _main_logger.warning("Nothing to do. Getting bored...\n")
-            return True
+            return
+
         if self.has_named_tasks:
             await self._show_todo()
-        results = await concurrent_call(self._run_task, self.tasks)
-        failed_tasks = [task for task, ok in results if not ok]
-        if failed_tasks:
-            failed_tasks_str = " ".join(f"{FAIL} {t}" for t in failed_tasks)
-            _main_logger.error("")
-            _main_logger.error(f"💀 {bold('Failed tasks:')} {failed_tasks_str}")
-        return not failed_tasks
+        self._results = await concurrent_call(self._run_task, self.tasks)
+
+    @property
+    def failed_summary(self) -> str:
+        failed_tasks = [task for task, ok in self._results if not ok]
+        if not failed_tasks:
+            return ""
+        failed_tasks_str = " ".join(f"{FAIL} {t}" for t in failed_tasks)
+        return f"\n💀 {bold('Failed tasks:')} {failed_tasks_str}"
 
     def _task_line(self, bullet: str, task: Task, data: str) -> str:
         return f"{bullet} {task.id.ljust(self.max_name_length)}  {faint(data)}"
@@ -60,9 +64,7 @@ class TaskRunner:
 
         logger_name = "successful" if is_successful else "failed"
         task_logger = log.get_logger(f"{logger_name}_tasks")
-        if out:
-            task_logger.info(out.decode())
-        if err:
-            task_logger.error(err.decode())
+        task_logger.log(log_level, out.decode())
+        task_logger.log(log_level, err.decode())
 
         return task.id, is_successful
