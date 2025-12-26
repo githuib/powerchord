@@ -18,4 +18,4 @@ def main() -> None:
     runner = TaskRunner(config.tasks)
     with log.context(lvl_main, successful_tasks=lvl_tasks_s, failed_tasks=lvl_tasks_f):
         asyncio.run(runner.run_tasks())
-    sys.exit(runner.failed_summary)
+    sys.exit(runner.failed_summary or 0)
