@@ -4,11 +4,11 @@ requires-python = ">=3.14"
 
 [[package]]
 name = "based-utils"
-version = "1.0.7"
+version = "1.0.17"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/b5/01/8bb854268d9aff0f4d84fa810814a07d233d8693a615ad644e7ae86b428c/based_utils-1.0.7.tar.gz", hash = "sha256:cdb24d3d96c014620efc9a94a9353ec54a954c9e46880c3a5651dcc1946c6ec0", size = 15584, upload-time = "2025-12-24T22:26:21.676Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/19/5a/e61217ca068281710edcc164ab5096264e99aa9dfcb7d4cc4202b4279721/based_utils-1.0.17.tar.gz", hash = "sha256:873396d51331f76421dd1352b3e7c11caaaad26f972efbe19ad5a7b9d95ef3d4", size = 16464, upload-time = "2025-12-27T14:41:48.608Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/1c/64/1ae80bb0f17f57df426aadb498332b0dd2b9f58ca0f11bd42a78aa93d705/based_utils-1.0.7-py3-none-any.whl", hash = "sha256:8b97f624f6db083f9a86e90e7c697980bd18179de7bccc4678bc12642eb5f400", size = 20026, upload-time = "2025-12-24T22:26:20.564Z" },
+    { url = "https://files.pythonhosted.org/packages/9c/63/9955ebaa4171a28c3998266180d98336e5b98ba49a93d10269b9ec785bd1/based_utils-1.0.17-py3-none-any.whl", hash = "sha256:ce59550dd829ba6d7adbfa0a71f523e68be29c47105672566d7486727edb0cfa", size = 21268, upload-time = "2025-12-27T14:41:47.392Z" },
 ]
 
 [[package]]
@@ -98,15 +98,15 @@ wheels = [
 
 [[package]]
 name = "kleur"
-version = "2.0.7"
+version = "2.0.9"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "based-utils" },
     { name = "hsluv" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/3f/97/c701c8be9557a694e9e7a3593dbd33f38c8b5b3e1e661367a9e16f265982/kleur-2.0.7.tar.gz", hash = "sha256:e9184a276ff8c8df629ea56bcc430e2eb2a43d05b376761396d0e54c56ceaa8f", size = 11383, upload-time = "2025-12-24T05:17:43.354Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/b6/07/3e98d9bb95f906516ac02ee9617e4d0f817ddbb0611e9b96f08131940122/kleur-2.0.9.tar.gz", hash = "sha256:951e1a8bf743adf28e1e6ee680b07028f4b32fd70870f1f1882b607b97e86966", size = 11158, upload-time = "2025-12-27T14:43:49.614Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/11/80/78bdd5b75ff719bbc9fc535b902a86a65d9a64c3747df2f14ee6dc79f6ad/kleur-2.0.7-py3-none-any.whl", hash = "sha256:1dcebe240a8ee1f1852aa37d1cde8c4c93693625a2c72099d67391a71aba2655", size = 13516, upload-time = "2025-12-24T05:17:41.868Z" },
+    { url = "https://files.pythonhosted.org/packages/eb/67/8e13d3a92ae89c9c4199683c7611fc8ee6690dc9cd9b4b1393270e309d43/kleur-2.0.9-py3-none-any.whl", hash = "sha256:e0682cf80270b2ba2a9ae5639a24c76807e2848654693cbaaac692c9c3eaf5f4", size = 13268, upload-time = "2025-12-27T14:43:47.895Z" },
 ]
 
 [[package]]
